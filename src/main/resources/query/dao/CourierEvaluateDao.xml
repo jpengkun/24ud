@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.CourierEvaluateDao">
+    <select id="countEvaluate" resultType="java.lang.Long"
+            parameterType="cn.huaruan.ud24.vo.FindEvaluateAboutCourierParam">
+        SELECT count(*) FROM
+        `courier_evaluate` WHERE 1 = 1
+        <if test="courierId != null and courierId !=''">
+            AND `courier_evaluate`.courier_id LIKE #{courierId}
+        </if>
+        <if test="timelyId != null and timelyId !=''">
+            AND `courier_evaluate`.timely_id LIKE #{timelyId}
+        </if>
+    </select>
+    <select id="findCourierEvaluateByCourierId" resultType="cn.huaruan.ud24.query.entity.CourierEvaluate"
+            parameterType="cn.huaruan.ud24.vo.FindEvaluateAboutCourierParam">
+        SELECT *
+        FROM `courier_evaluate`
+        WHERE 1=1
+        <if test="courierId != null and courierId !=''">
+            AND `courier_evaluate`.courier_id LIKE #{courierId}
+        </if>
+        <if test="timelyId != null and timelyId !=''">
+            AND `courier_evaluate`.timely_id LIKE #{timelyId}
+        </if>
+    </select>
+</mapper>

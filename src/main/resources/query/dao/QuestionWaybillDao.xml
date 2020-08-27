@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.QuestionWaybillDao">
+    <select id="contQuestion" resultType="java.lang.Long"
+            parameterType="cn.huaruan.ud24.vo.FindQuestionWaybillParam">
+        select count(*) from
+        `question_waybill` `waybill` where 1=1
+        <if test="waybillId != null and waybillId !=''">
+            and `waybill`.waybill_id like "%"#{waybillId}"%"
+        </if>
+        <if test="type != null">
+            and `waybill`.type=#{type}
+        </if>
+        <if test="questionType != null">
+            and `waybill`.question_type_id = #{questionType}
+        </if>
+        <if test="status != null">
+            and `waybill`.question_status = #{status}
+        </if>
+        <if test="starTime != null and endTime != null">
+            and `waybill`.creat_time between #{starTime} and #{endTime}
+        </if>
+    </select>
+
+
+    <select id="findWithSubQuestion" resultType="cn.huaruan.ud24.vo.QuestionWithType"
+            parameterType="cn.huaruan.ud24.vo.FindQuestionWaybillParam">
+        select *
+        from `question_waybill`
+        where 1=1
+        <if test="waybillId != null and waybillId !=''">
+            and `question_waybill`.waybill_id like "%"#{waybillId}"%"
+        </if>
+        <if test="type != null">
+            and `question_waybill`.type=#{type}
+        </if>
+        <if test="questionType != null">
+            and `question_waybill`.question_type = #{questionType}
+        </if>
+        <if test="status != null">
+            and `question_waybill`.question_status = #{status}
+        </if>
+        <if test="starTime != null and endTime != null">
+            and `question_waybill`.creat_time between #{starTime} and #{endTime}
+        </if>
+        <if test="limit != null and limit !=''">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null and offset !=''">
+            OFFSET #{offset}
+        </if>
+    </select>
+</mapper>

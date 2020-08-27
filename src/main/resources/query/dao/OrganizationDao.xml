@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.OrganizationDao">
+    <select id="countSames" resultType="cn.huaruan.ud24.query.entity.Organization">
+        SELECT *
+        FROM `organization`
+        WHERE 1 = 1
+        <if test="idNot != null and idNot != '' ">
+            AND `id` != #{idNot}
+        </if>
+        <if test="parentId != null and parentId != '' ">
+            AND `parent_id` = #{parentId}
+        </if>
+        <if test="code != null and code != '' ">
+            AND `code` = #{code}
+        </if>
+        <if test="levelNot != null">
+            AND `level` != #{levelNot}
+        </if>
+    </select>
+
+    <select id="findChildrenById" resultType="cn.huaruan.ud24.vo.OrgWithRegionNode">
+        SELECT DISTINCT
+        *, ST_AsText(`polygon`) as region
+        FROM `organization`
+        <if test="id != null and id != '' ">
+            WHERE FIND_IN_SET(`id` ,getChildrenList(#{id}))
+        </if>
+    </select>
+
+    <select id="findParentById" resultType="cn.huaruan.ud24.vo.OrgWithRegionNode">
+        SELECT DISTINCT *, ST_AsText(`polygon`) as region
+        FROM `organization`
+        <if test="id != null and id != '' ">
+            WHERE FIND_IN_SET(`id` ,getParentList(#{id}))
+        </if>
+    </select>
+
+    <select id="findByPoint" resultType="cn.huaruan.ud24.vo.OrgWithRegion">
+        SELECT *, ST_AsText(`polygon`) as region
+        FROM `organization`
+        WHERE 1 = 1
+        <if test="point != null">
+            AND ST_contains(`polygon`, ST_GeomFromText(#{point})) = 1
+        </if>
+        <if test="level != null">
+            AND `level` = #{level}
+        </if>
+        LIMIT 1
+    </select>
+
+    <update id="updatePolygonById" parameterType="cn.huaruan.ud24.vo.OrgWithRegion">
+        UPDATE `organization`
+        SET `polygon` = ST_GeomFromText(#{polygon})
+        WHERE `id` = #{id}
+    </update>
+
+    <select id="findById" resultType="cn.huaruan.ud24.vo.OrgWithRegion">
+        SELECT *, ST_AsText(`polygon`) as region
+        FROM `organization`
+        WHERE `id` = #{id}
+    </select>
+
+    <select id="findBroAndParentById" resultType="cn.huaruan.ud24.vo.OrgWithRegion">
+        SELECT *, ST_AsText(`polygon`) as region
+        FROM `organization`
+        WHERE `id` != #{id}
+        AND `parent_id` = (SELECT `parent_id` FROM `organization` WHERE `id` = #{id})
+        OR  `id` = (SELECT `parent_id` FROM `organization` WHERE `id` = #{id})
+    </select>
+
+    <select id="findBroById" resultType="cn.huaruan.ud24.vo.OrgSimpleVo">
+        SELECT id,name
+        FROM `organization`
+        WHERE `id` != #{id}
+        AND `parent_id` = (SELECT `parent_id` FROM `organization` WHERE `id` = #{id})
+    </select>
+
+    <select id="findChildrenSiteById" resultType="cn.huaruan.ud24.vo.OrgSimpleVo">
+        SELECT id,name
+        FROM `organization`
+        WHERE FIND_IN_SET(`id` ,getChildrenList(#{id}))
+        AND `level` = 4
+    </select>
+
+    <select id="findAllFrance" resultType="cn.huaruan.ud24.vo.OrgSimpleVo">
+        SELECT id,name
+        FROM `organization`
+        WHERE level = 0
+        OR mode = 2
+    </select>
+
+    <resultMap id="OrganizationWithQuote" type="cn.huaruan.ud24.vo.OrganizationWithQuoteNode">
+        <result column="org_id" jdbcType="VARCHAR" property="orgId"/>
+        <result column="org_pid" jdbcType="VARCHAR" property="orgPid"/>
+        <result column="org_city" jdbcType="VARCHAR" property="orgCity"/>
+        <result column="org_name" jdbcType="VARCHAR" property="orgName"/>
+        <!--运单记录（一对多）-->
+        <association property="todays" javaType="cn.huaruan.ud24.query.entity.QuoteToday">
+            <id column="id_to" jdbcType="VARCHAR" property="id"/>
+            <result column="weight_method_to" jdbcType="INTEGER" property="weightMethod"/>
+            <result column="operator_to" jdbcType="VARCHAR" property="operator"/>
+            <result column="create_time_to" jdbcType="TIMESTAMP" property="createTime"/>
+            <result column="base_price_to" jdbcType="DECIMAL" property="basePrice"/>
+            <result column="additional_weight_to" jdbcType="DECIMAL" property="additionalWeight"/>
+            <result column="first_weight_to" jdbcType="DECIMAL" property="firstWeight"/>
+            <result column="top_weight_to" jdbcType="DECIMAL" property="topWeight"/>
+        </association>
+        <association property="timely" javaType="cn.huaruan.ud24.query.entity.QuoteTimely">
+            <id column="id_ti" jdbcType="VARCHAR" property="id"/>
+            <result column="weight_method_ti" jdbcType="INTEGER" property="weightMethod"/>
+            <result column="operator_ti" jdbcType="VARCHAR" property="operator"/>
+            <result column="create_time_ti" jdbcType="TIMESTAMP" property="createTime"/>
+            <result column="base_price_ti" jdbcType="DECIMAL" property="basePrice"/>
+            <result column="first_weight_ti" jdbcType="DECIMAL" property="firstWeight"/>
+            <result column="additional_weight_ti" jdbcType="DECIMAL" property="additionalWeight"/>
+            <result column="top_weight_ti" jdbcType="DECIMAL" property="topWeight"/>
+            <result column="first_distance" jdbcType="DECIMAL" property="firstDistance"/>
+            <result column="first_distance_price" jdbcType="DECIMAL" property="firstDistancePrice"/>
+            <result column="second_distance" jdbcType="DECIMAL" property="secondDistance"/>
+            <result column="second_distance_price" jdbcType="DECIMAL" property="secondDistancePrice"/>
+            <result column="additional_distance" jdbcType="DECIMAL" property="additionalDistance"/>
+        </association>
+    </resultMap>
+
+
+    <select id="findQuoteByOid" resultMap="OrganizationWithQuote"
+            parameterType="cn.huaruan.ud24.vo.FindQuoteParam">
+        SELECT
+        `org`.`id` `org_id`,
+        `org`.`parent_id` `org_pid`,
+        `org`.`name` `org_name`,
+        `org`.`city` `org_city`,
+        `qti`.id id_ti,
+        `qti`.weight_method weight_method_ti,
+        `qti`. operator operator_ti,
+        `qti`.create_time create_time_ti,
+        `qti`. base_price base_price_ti,
+        `qti`. first_weight first_weight_ti,
+        `qti`. additional_weight additional_weight_ti,
+        `qti`. top_weight top_weight_ti,
+        `qti`. first_distance,
+        `qti`. first_distance_price,
+        `qti`. second_distance,
+        `qti`. second_distance_price,
+        `qti`. additional_distance,
+        `qto`.id id_to,
+        `qto`.weight_method weight_method_to,
+        `qto`.operator operator_to,
+        `qto`.create_time create_time_to,
+        `qto`.o_id o_id_to,
+        `qto`.base_price base_price_to,
+        `qto`.additional_weight additional_weight_to,
+        `qto`.first_weight first_weight_to,
+        `qto`.top_weight top_weight_to
+        FROM (
+        SELECT * FROM `organization`
+        WHERE level &lt;= 3
+        <if test="orgId != null">
+            AND `org_id` IN (SELECT `id`
+            FROM `organization`
+            WHERE FIND_IN_SET(`id` ,getChildrenList(#{orgId})))
+        </if>
+        ) `org`
+        LEFT JOIN `quote_timely` `qti` ON `org`.`id` = `qti`.`o_id`
+        LEFT JOIN `quote_today` `qto` ON `org`.`id` = `qto`.`o_id`
+    </select>
+
+
+
+    <select id="findFinStmt" parameterType="cn.huaruan.ud24.vo.FindStmtParam"
+            resultType="cn.huaruan.ud24.vo.FinStmtNode">
+        SELECT `org_id`,
+        `pid`,
+        `level`,
+        `org_name`,
+        `timely_count`,
+        `timely_total`,
+        `todays_count`,
+        `todays_total`
+        FROM
+        (SELECT `o`.`id` `org_id`,`o`.`parent_id` `pid`, `o`.`name` `org_name`,`o`.`level` `level`, count(`ti`.`id`)
+        timely_count, COALESCE(sum(`ti`.`amount`), 0) timely_total
+        FROM (SELECT *
+        FROM `organization`
+        WHERE FIND_IN_SET(`organization`.`id`, getChildrenList(#{orgId}))
+        AND `level` &lt;= 4
+        ) `o`
+        LEFT JOIN (SELECT * FROM `timely_waybill`
+        WHERE `pay_status` = TRUE
+        <if test="createTimeStart != null and createTimeEnd != null">
+            AND `create_time` BETWEEN #{createTimeStart} AND #{createTimeEnd}
+        </if>
+        ) `ti`
+        ON `o`.`id` = `ti`.`org_id`
+        GROUP BY `o`.`id`) t1,
+        (SELECT `o`.`id`, count(`to`.`id`) `todays_count`, COALESCE(sum(`to`.`amount`), 0) todays_total
+        FROM (SELECT *
+        FROM `organization`
+        WHERE FIND_IN_SET(`organization`.`id`, getChildrenList(#{orgId}))
+        AND `level` &lt;= 4
+        ) `o`
+        LEFT JOIN (
+        SELECT * FROM `todays_waybill`
+        WHERE `pay_status` = TRUE
+        <if test="createTimeStart != null and createTimeEnd != null">
+            AND `create_time` BETWEEN #{createTimeStart} AND #{createTimeEnd}
+        </if>
+        ) `to`
+        ON `o`.`id` = `to`.`start_org_id`
+        GROUP BY `o`.`id`) `t2`
+        WHERE `t1`.`org_id` = `t2`.`id`
+    </select>
+
+
+<!--    <select id="findOrgStmt" parameterType="cn.huaruan.ud24.vo.FindStmtParam"-->
+<!--            resultType="cn.huaruan.ud24.vo.OrgStmtNode">-->
+<!--        SELECT `org_id`, `pid`, `level`, `org_name`, `todo_count`, `done_count`,`abnormal_count`-->
+<!--        FROM (SELECT `o`.`id`                              `org_id`,-->
+<!--        `o`.`parent_id`                       `pid`,-->
+<!--        `o`.`name`                            `org_name`,-->
+<!--        `o`.`level`                           `level`,-->
+<!--        count(`to1`.`id`) + count(`to2`.`id`) todo_count,-->
+<!--        count(to3.id) done_count,-->
+<!--        count(to4.id) abnormal_count-->
+<!--        FROM (SELECT *-->
+<!--        FROM `organization`-->
+<!--        WHERE FIND_IN_SET(`organization`.`id`, getChildrenList(#{orgId})) AND `level` &lt;= 4) `o`-->
+<!--        LEFT JOIN (SELECT * FROM `todays_waybill` WHERE `state` IN (1, 2, 3, 4)-->
+<!--        <if test="createTimeStart != null and createTimeEnd != null">-->
+<!--            AND `create_time` BETWEEN #{createTimeStart} AND #{createTimeEnd}-->
+<!--        </if>) `to1` ON `o`.`id` = `to1`.`start_org_id`-->
+<!--        LEFT JOIN (SELECT * FROM `todays_waybill` WHERE `state` IN (5, 6)-->
+<!--        <if test="createTimeStart != null and createTimeEnd != null">-->
+<!--            AND `create_time` BETWEEN #{createTimeStart} AND #{createTimeEnd}-->
+<!--        </if>) `to2` ON `o`.`id` = `to2`.`dest_org_id`-->
+<!--        LEFT JOIN (SELECT * FROM `todays_waybill` WHERE `state` = 7-->
+<!--        <if test="createTimeStart != null and createTimeEnd != null">-->
+<!--            AND `create_time` BETWEEN #{createTimeStart} AND #{createTimeEnd}-->
+<!--        </if>) `to3` ON `o`.`id` = `to3`.`start_org_id`-->
+<!--        LEFT JOIN (SELECT * FROM `todays_waybill` WHERE `state` = 99-->
+<!--        <if test="createTimeStart != null and createTimeEnd != null">-->
+<!--            AND `create_time` BETWEEN #{createTimeStart} AND #{createTimeEnd}-->
+<!--        </if>) `to4` ON `o`.`id` = `to4`.`start_org_id`-->
+<!--        GROUP BY `o`.`id`) as t-->
+<!--    </select>-->
+
+    <resultMap id="OrgStmtNode" type="cn.huaruan.ud24.vo.OrgStmtNode">
+        <result column="org_id" jdbcType="VARCHAR" property="orgId"/>
+        <result column="org_pid" jdbcType="VARCHAR" property="orgPid"/>
+        <result column="org_name" jdbcType="VARCHAR" property="orgName"/>
+        <result column="level" jdbcType="INTEGER" property="level"/>
+        <collection property="courierList" ofType="cn.huaruan.ud24.vo.CourierStmt">
+            <result column="courier_id" jdbcType="VARCHAR" property="courierId"/>
+            <result column="courier_name" jdbcType="VARCHAR" property="courierName"/>
+        </collection>
+    </resultMap>
+
+    <select id="findOrgStmt" parameterType="cn.huaruan.ud24.vo.FindStmtParam"
+            resultMap="OrgStmtNode">
+        SELECT `o`.`id` `org_id`,
+        `o`.`parent_id` `org_pid`,
+        `o`.`name` `org_name`,
+        `o`.`level` `level`,
+        `tc`.id `courier_id`,
+        `tc`.name `courier_name`
+        FROM (SELECT *
+        FROM `organization`
+        WHERE FIND_IN_SET(`organization`.`id`, getChildrenList(#{orgId})) AND `level` &lt;= 4) `o`
+        LEFT JOIN `todays_courier` `tc` ON `o`.`id` = `tc`.`oid`
+    </select>
+
+</mapper>

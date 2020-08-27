@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.VipUserDao">
+
+  <select id="countVipUser" resultType="java.lang.Long"
+          parameterType="cn.huaruan.ud24.vo.FindVipUserParam">
+    select count(*) from
+    `vip_user` `user` where 1
+    <if test="state != null">
+      and `user`.`state` = #{state}
+    </if>
+    <if test="userName != null and userName !=''">
+      and `user`.`user_name` like "%"#{userName}"%"
+    </if>
+    <if test="tel != null and tel !=''">
+      and `user`.`tel` like "%"#{tel}"%"
+    </if>
+    <if test="type != null">
+      and `user`.`type` = #{type}
+    </if>
+  </select>
+
+  <select id="findVipUserWithParam" resultType="cn.huaruan.ud24.query.entity.VipUser"
+          parameterType="cn.huaruan.ud24.vo.FindVipUserParam">
+    select * from
+    `vip_user` `user` where 1
+    <if test="state != null">
+      and `user`.`state` = #{state}
+    </if>
+    <if test="userName != null and userName !=''">
+      and `user`.`user_name` like "%"#{userName}"%"
+    </if>
+    <if test="tel != null and tel !=''">
+      and `user`.`tel` like "%"#{tel}"%"
+    </if>
+    <if test="type != null">
+      and `user`.`type` = #{type}
+    </if>
+    <if test="limit != null">
+      LIMIT #{limit}
+    </if>
+    <if test="offset != null">
+      OFFSET #{offset}
+    </if>
+  </select>
+
+</mapper>

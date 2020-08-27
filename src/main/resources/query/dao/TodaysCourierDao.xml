@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.TodaysCourierDao">
+    <select id="countCourier" resultType="java.lang.Long"
+            parameterType="cn.huaruan.ud24.vo.FindCourierParam">
+        SELECT  count(*)
+        FROM `todays_courier` `tc`
+        WHERE 1 = 1
+        <include refid="condition"/>
+    </select>
+    <select id="findCourierWithSubCourier" resultType="cn.huaruan.ud24.vo.TodaysCourierWithOrganization"
+            parameterType="cn.huaruan.ud24.vo.FindCourierParam">
+        SELECT
+        `tc`.`id`,
+        `tc`.`area_id`,
+        `tc`.`certificate_type`,
+        `tc`.`create_time`,
+        `tc`.`emergency_people`,
+        `tc`.`emergency_phone`,
+        `tc`.`gid`,
+        `tc`.`head_portrait`,
+        `tc`.`identity`,
+        `tc`.`login_time`,
+        `tc`.`money`,
+        `tc`.`name`,
+        `tc`.`oid`,
+        `tc`.`password`,
+        `tc`.`phone`,
+        `tc`.`remark`,
+        `tc`.`sex`,
+        `tc`.`state`,
+        `orgo`.name `org_name`,
+        `orga`.`name` `area_name`
+        FROM (SELECT *
+        FROM `todays_courier` `tc`
+        WHERE 1 = 1
+        <include refid="condition"/>
+        <if test="limit != null and limit !=''">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null and offset !=''">
+            OFFSET #{offset}
+        </if>
+        ) `tc`
+        LEFT JOIN `organization` `orgo` ON `tc`.`oid` = `orgo`.`id`
+        LEFT JOIN `organization` `orga` ON `tc`.`area_id` = `orga`.`id`
+    </select>
+    <select id="findAll" resultType="cn.huaruan.ud24.vo.TodaysCourierWithOrganization"
+            parameterType="cn.huaruan.ud24.vo.FindCourierParam">
+        SELECT
+        `tc`.`id`,
+        `tc`.`area_id`,
+        `tc`.`certificate_type`,
+        `tc`.`create_time`,
+        `tc`.`emergency_people`,
+        `tc`.`emergency_phone`,
+        `tc`.`gid`,
+        `tc`.`head_portrait`,
+        `tc`.`identity`,
+        `tc`.`login_time`,
+        `tc`.`money`,
+        `tc`.`name`,
+        `tc`.`oid`,
+        `tc`.`password`,
+        `tc`.`phone`,
+        `tc`.`remark`,
+        `tc`.`sex`,
+        `tc`.`state`,
+        `orgo`.name `org_name`,
+        `orga`.`name` `area_name`
+        FROM (SELECT *
+        FROM `todays_courier` `tc`
+        WHERE 1 = 1
+        <include refid="condition"/>
+        ) `tc`
+        LEFT JOIN `organization` `orgo` ON `tc`.`oid` = `orgo`.`id`
+        LEFT JOIN `organization` `orga` ON `tc`.`area_id` = `orga`.`id`
+    </select>
+
+    <sql id="condition">
+        <if test="name != null and name !=''">
+            AND `tc`.`name` LIKE "%"#{name}"%"
+        </if>
+        <if test="phone != null and phone !='' ">
+            AND `tc`.`phone` LIKE "%"#{phone}"%"
+        </if>
+        <if test="state != null">
+            AND `tc`.`state` = #{state}
+        </if>
+        <if test="areaId != null and areaId !=''">
+            AND `tc`.`area_id` = #{areaId}
+        </if>
+        <if test="oid != null and oid !=''">
+            AND `oid`
+            IN (SELECT `id` FROM `organization` WHERE FIND_IN_SET(`id` ,getChildrenList(#{oid})))
+        </if>
+    </sql>
+
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.FinanceTimelyDao">
+
+  <select id="findFinanceTimely" resultType="cn.huaruan.ud24.query.entity.FinanceTimely"
+          parameterType="cn.huaruan.ud24.query.entity.FinanceTimely">
+    SELECT *
+    FROM `finance_timely`
+    WHERE 1 = 1
+    <if test="franchiseeId != null">
+      and `franchisee_id` = #{franchiseeId}
+    </if>
+  </select>
+
+  <select id="findByOId" resultType="cn.huaruan.ud24.query.entity.FinanceTimely">
+    select * from
+    `finance_timely` `ft` where 1 = 1
+    <if test="oid != null and oid != ''">
+      and `ft`.`o_id` = #{oid}
+    </if>
+  </select>
+
+  <update id="updateFinanceTimely" parameterType="cn.huaruan.ud24.query.entity.FinanceTimely">
+    UPDATE `finance_timely`
+    <set>
+      <if test="center != null">
+        `center` = #{center},
+      </if>
+      <if test="allocation != null">
+        `allocation` = #{allocation},
+      </if>
+      <if test="site != null">
+        `site` = #{site},
+      </if>
+      <if test="courier != null">
+        `courier` = #{courier},
+      </if>
+    </set>
+    where `o_id` = #{oId}
+  </update>
+
+  <select id="findCalFinanceTimely" resultType="cn.huaruan.ud24.query.entity.FinanceTimely">
+        SELECT *
+FROM (SELECT *
+        FROM `finance_timely`
+        WHERE `o_id`
+        IN (
+            SELECT `id`
+            FROM `organization`
+            WHERE FIND_IN_SET(`id`,getParentList(#{orgId})))
+        ) AS ft
+LEFT JOIN organization `o`
+ON ft.`o_id` = `o`.`id`
+GROUP BY ft.`timely_id`
+HAVING
+MAX(`o`.`level`) = (
+    SELECT MAX(`level`)
+    FROM (
+        SELECT *
+        FROM `finance_timely`
+        WHERE `o_id`
+        IN (
+            SELECT `id`
+            FROM `organization`
+            WHERE FIND_IN_SET(`id`,getParentList(#{orgId})))
+        ) AS `ft`
+    LEFT JOIN `organization` `o`
+    ON ft.`o_id` = `o`.`id`
+    )
+    </select>
+
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.ExpectTimeDao">
+
+    <select id="countExpectTime" resultType="java.lang.Long">
+        select count(*)from `expect_time`
+        where 1=1
+        <if test="oid != null and oid !=''">
+            AND `oid`
+            IN (SELECT `name` FROM `organization` WHERE FIND_IN_SET(`id` ,getChildrenList(#{oid})))
+        </if>
+    </select>
+
+    <resultMap id="ExpectTimeNode" type="cn.huaruan.ud24.vo.ExpectTimeWithOrganization">
+        <result column="oid" jdbcType="VARCHAR" property="oid"/>
+        <result column="pid" jdbcType="VARCHAR" property="pid"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <collection property="times" ofType="cn.huaruan.ud24.query.entity.ExpectTime">
+            <result column="id" jdbcType="VARCHAR" property="id"/>
+            <result column="start_time" jdbcType="VARCHAR" property="startTime"/>
+            <result column="end_time" jdbcType="VARCHAR" property="endTime"/>
+        </collection>
+    </resultMap>
+
+    <select id="findExpectTime" resultMap="ExpectTimeNode">
+        SELECT DISTINCT
+        `e`.`oid`,
+        `e`.`start_time`,
+        `e`.`end_time`,
+        `e`.`id`,
+        `o`.`name`,
+        `o`.`parent_id` `pid`
+        FROM
+        (SELECT * FROM `expect_time`
+        WHERE 1=1
+        <if test="oid != null and oid !=''">
+            AND `oid`
+            IN (SELECT `id` FROM `organization` WHERE FIND_IN_SET(`id` ,getChildrenList(#{oid})))
+        </if>
+        <if test="limit != null and limit !=''">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null and offset !=''">
+            OFFSET #{offset}
+        </if>) `e`
+        LEFT JOIN `organization` `o` ON `e`.`oid` = `o`.`id`
+    </select>
+</mapper>

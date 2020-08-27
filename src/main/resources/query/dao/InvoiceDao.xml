@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.InvoiceDao">
+    <select id="countInvoice" resultType="java.lang.Long"
+            parameterType="cn.huaruan.ud24.vo.FindInvoiceParam">
+        SELECT count(*) FROM
+        `invoice` WHERE 1
+        <if test="openId != null and openId !=''">
+            AND `invoice`.open_id LIKE #{openId}
+        </if>
+    </select>
+
+
+    <resultMap id="ResultMap" type="cn.huaruan.ud24.vo.InvoiceWithItem">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="tax_num" jdbcType="VARCHAR" property="taxNum" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+        <result column="tel" jdbcType="VARCHAR" property="tel" />
+        <result column="open_id" jdbcType="VARCHAR" property="openId" />
+        <result column="address_and_phone_num" jdbcType="VARCHAR" property="addressAndPhoneNum" />
+        <result column="bank_and_num" jdbcType="VARCHAR" property="bankAndNum" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="pdf_url" jdbcType="VARCHAR" property="pdfUrl" />
+        <result column="invoice_url" jdbcType="VARCHAR" property="invoiceUrl" />
+        <result column="invoice_num" jdbcType="VARCHAR" property="invoiceNum" />
+        <result column="invoice_code" jdbcType="VARCHAR" property="invoiceCode" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+
+        <collection property="items" ofType="cn.huaruan.ud24.query.entity.InvoiceWaybill">
+            <result column="waybill_id" jdbcType="VARCHAR" property="waybillId" />
+            <result column="amount" jdbcType="DECIMAL" property="amount" />
+        </collection>
+    </resultMap>
+
+    <select id="findByOpenId" resultMap="ResultMap"
+            parameterType="cn.huaruan.ud24.vo.FindInvoiceParam">
+        SELECT
+        `invoice`.id,
+        `invoice`.title,
+        `invoice`.tax_num,
+        `invoice`.email,
+        `invoice`.tel,
+        `invoice`.open_id,
+        `invoice`.address_and_phone_num,
+        `invoice`.bank_and_num,
+        `invoice`.remark,
+        `invoice`.pdf_url,
+        `invoice`.invoice_url,
+        `invoice`.invoice_num,
+        `invoice`.invoice_code,
+        `invoice`.create_time,
+        `waybill`.invoice_id,
+        `waybill`.waybill_id,
+        `waybill`.amount
+        FROM
+        (select * from `invoice` WHERE 1=1
+        <if test="openId != null and openId !=''">
+            AND `invoice`.open_id LIKE #{openId}
+        </if>
+        <if test="limit != null and limit !=''">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null and offset !=''">
+            OFFSET #{offset}
+        </if>)  `invoice`
+        LEFT JOIN `invoice_waybill` `waybill` ON `waybill`.invoice_id LIKE `invoice`.id
+    </select>
+
+</mapper>

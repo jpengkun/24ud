@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.AddressBookDao">
+    <select id="countAddressBook" resultType="java.lang.Long"
+            parameterType="cn.huaruan.ud24.vo.FindAddressBookParam">
+        SELECT count(*) FROM
+        `address_book` WHERE 1 = 1
+        <if test="openId != null and openId !=''">
+            AND `open_id` LIKE #{openId}
+        </if>
+        <if test="state != null">
+            AND `state` = #{state}
+        </if>
+    </select>
+    <select id="findWithSubAddressBook" resultType="cn.huaruan.ud24.query.entity.AddressBook"
+            parameterType="cn.huaruan.ud24.vo.FindAddressBookParam">
+        SELECT *
+        FROM `address_book`
+        WHERE 1=1
+        <if test="openId != null and openId !=''">
+            AND `open_id` LIKE #{openId}
+        </if>
+        <if test="state != null">
+            AND `state` = #{state}
+        </if>
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null">
+            OFFSET #{offset}
+        </if>
+    </select>
+</mapper>

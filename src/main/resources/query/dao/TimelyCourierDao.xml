@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.TimelyCourierDao">
+    <select id="countTimely" resultType="java.lang.Long"
+            parameterType="cn.huaruan.ud24.vo.FindTimelyCourierParam">
+        SELECT count(*) FROM
+        `timely_courier` WHERE 1 = 1
+        <if test="name != null and name !=''">
+            AND `timely_courier`.name LIKE "%"#{name}"%"
+        </if>
+        <if test="phone != null and phone !='' ">
+            AND `timely_courier`.phone LIKE "%"#{phone}"%"
+        </if>
+        <if test="state != null">
+            AND `timely_courier`.state = #{state}
+        </if>
+    </select>
+    <select id="findWithSubTimelyArrive" resultType="cn.huaruan.ud24.query.entity.TimelyCourier"
+            parameterType="cn.huaruan.ud24.vo.FindTimelyCourierParam">
+        SELECT *
+        FROM `timely_courier`
+        WHERE 1=1
+        <if test="name != null and name !=''">
+            AND `timely_courier`.name LIKE "%"#{name}"%"
+        </if>
+        <if test="phone != null and phone !='' ">
+            AND `timely_courier`.phone LIKE "%"#{phone}"%"
+        </if>
+        <if test="state != null">
+            AND `timely_courier`.state = #{state}
+        </if>
+        <if test="limit != null and limit !=''">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null and offset !=''">
+            OFFSET #{offset}
+        </if>
+    </select>
+
+    <update id="updateCourierStateByIds"
+            parameterType="cn.huaruan.ud24.vo.UpdateCourierStateVo">
+        UPDATE `timely_courier`
+        SET `timely_courier`.state = #{state}
+        WHERE `timely_courier`.id IN
+        <foreach collection="ids" item="item" index="index" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

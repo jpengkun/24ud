@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.MessageDao">
+    <resultMap id="BaseResultMap" type="cn.huaruan.ud24.vo.MessageWithUserIds">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="state" jdbcType="INTEGER" property="state"/>
+        <result column="detail" jdbcType="VARCHAR" property="detail"/>
+        <result column="waybill_id" jdbcType="VARCHAR" property="waybillId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <collection property="userIds" ofType="java.lang.String">
+            <result column="user_id" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <select id="findMessage" resultMap="BaseResultMap"
+            parameterType="cn.huaruan.ud24.vo.FindMessageParam">
+        SELECT m.*,mu.user_id FROM (
+        SELECT *
+        FROM `message`
+        WHERE 1 = 1
+        <if test="id != null">
+            AND `id` = #{id}
+        </if>
+        <if test="type != null">
+            AND `type` = #{type}
+        </if>
+        <if test="state != null">
+            AND `state` = #{state}
+        </if>
+        <if test="waybillId != null">
+            AND `waybill_id` = #{waybillId}
+        </if>
+        <if test="userId != null and userId !=''">
+            AND id IN (SELECT DISTINCT message_id FROM message_user WHERE user_id = #{userId})
+        </if>
+        <if test="limit != null and limit !=''">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null and offset !=''">
+            OFFSET #{offset}
+        </if>
+        ) m
+        LEFT JOIN `message_user` mu ON m.id = mu.message_id
+        ORDER BY
+        `create_time` DESC,
+        `state`
+    </select>
+
+    <select id="countMessage" resultType="java.lang.Long"
+            parameterType="cn.huaruan.ud24.vo.FindMessageParam">
+        SELECT count(*)
+        FROM `message`
+        WHERE 1 = 1
+        <if test="id != null">
+            AND `id` = #{id}
+        </if>
+        <if test="type != null">
+            AND `type` = #{type}
+        </if>
+        <if test="state != null">
+            AND `state` = #{state}
+        </if>
+        <if test="waybillId != null">
+            AND `waybill_id` = #{waybillId}
+        </if>
+        <if test="userId != null and userId !=''">
+            AND id IN (SELECT DISTINCT message_id FROM message_user WHERE user_id = #{userId})
+        </if>
+    </select>
+
+    <insert id="insertMessageUser">
+        INSERT INTO message_user (message_id, user_id)
+        VALUES
+        <foreach collection="userIds" item="userId" index="index" separator=",">
+            (#{messageId}, #{userId})
+        </foreach>
+    </insert>
+</mapper>

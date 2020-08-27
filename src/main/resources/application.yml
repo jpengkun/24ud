@@ -1,0 +1,106 @@
+# 服务配置
+server:
+  port: 8080
+
+# 启用Swagger文档
+swagger:
+  enable: true
+# 启用全局方法日志
+appMethodLogger:
+  enable: true
+
+# Spring配置
+spring:
+  jackson: # Jackson配置
+    timeZone: GMT+8
+    dateFormat: yyyy-MM-dd HH:mm:ss
+  datasource: # 数据库配置
+    driverClassName: com.mysql.jdbc.Driver
+#    url: jdbc:mysql://192.168.1.153:3306/24ud?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true
+    url: jdbc:mysql://39.98.153.56:3306/24ud?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true
+    username: root
+    password: hrsoft2019!2#
+    # 使用druid数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+
+#    hikari:
+#      connection-init-sql: SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci
+  servlet:
+    multipart:
+      max-request-size: 10240MB
+      max-file-size: 1024MB
+  redis: # redis基本配置
+#    host: localhost
+#    host: 192.168.1.153
+    host: 127.0.0.1
+    port: 6379
+    # 连接超时时间（记得添加单位，Duration）
+    timeout: 10000ms
+    # Redis默认情况下有16个分片，这里配置具体使用的分片
+    # database: 0
+    lettuce:
+      pool:
+        # 连接池最大连接数（使用负值表示没有限制） 默认 8
+        max-active: 8
+        # 连接池最大阻塞等待时间（使用负值表示没有限制） 默认 -1
+        max-wait: -1ms
+        # 连接池中的最大空闲连接 默认 8
+        max-idle: 8
+        # 连接池中的最小空闲连接 默认 0
+        min-idle: 0
+    password: 123456
+
+# MyBatis 配置
+mybatis:
+  # mapper扫描路径
+  mapper-locations: classpath:query/*/*.xml
+  # 存放自定义类型处理器的路径
+  type-handlers-package: cn.huaruan.ud24.application.config.mybatis
+  configuration:
+    map-underscore-to-camel-case: true
+    use-generated-keys: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# jwt 配置
+jwt:
+  config:
+    key: huaruan
+    ttl: 3600000
+    remember: 604800000
+
+custom:
+  config:
+    ignores:
+      # 需要过滤的 get 请求
+      get:
+        - "/todays/waybill/pay/notify/**"
+        - "/timely/waybill/pay/notify/**"
+        - "/timely/waybill/**"
+        - "/todays/waybill/**"
+        - "/organization/franchisee"
+        - "/vip/**"
+      # 需要过滤的 post 请求
+      post:
+        - "/login"
+        - "/logout"
+        - "/todays/courier/forget"
+        - "/timely/courier"
+        - "/timely/courier/idCardUpload"
+        - "/timely/courier/forget"
+        - "/timely/courier/sendMsg"
+        - "/timely/courier/validateNum"
+        - "/todays/pay/notify"
+        - "/timely/pay/notify"
+        - "/timely/waybill/**"
+      # 需要过滤的请求，不限方法
+      pattern:
+        - "/**"
+        - "/websocket/**"
+        - "/wx/**"
+        # ===== swagger =====
+        - "/swagger-ui.html"
+        - "/swagger-resources/**"
+        - "/images/**"
+        - "/webjars/**"
+        - "/v2/api-docs"
+        # ===================

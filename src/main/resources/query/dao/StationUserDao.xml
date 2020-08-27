@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.StationUserDao">
+    <select id="countStation" resultType="java.lang.Long"
+            parameterType="cn.huaruan.ud24.vo.FindStationUserParam">
+        SELECT count(*)
+        FROM `station_user` `su`
+        WHERE 1 = 1
+        <if test="userName != null and userName !=''">
+            AND `su`.`user_name` LIKE "%"#{userName}"%"
+        </if>
+        <if test="phone != null and phone !='' ">
+            AND `su`.`phone` LIKE "%"#{phone}"%"
+        </if>
+        <if test="oid != null and oid !=''">
+            AND `oid`
+            IN (SELECT `id` FROM `organization` WHERE FIND_IN_SET(`id` ,getChildrenList(#{oid})))
+        </if>
+    </select>
+    <select id="findStationWithSub" resultType="cn.huaruan.ud24.query.entity.StationUser"
+            parameterType="cn.huaruan.ud24.vo.FindStationUserParam">
+        SELECT *
+        FROM  `station_user` `su`
+        WHERE 1 = 1
+        <if test="userName != null and userName !=''">
+            AND `su`.`user_name` LIKE "%"#{userName}"%"
+        </if>
+        <if test="phone != null and phone !='' ">
+            AND `su`.`phone` LIKE "%"#{phone}"%"
+        </if>
+        <if test="oid != null and oid !=''">
+            AND `oid`
+            IN (SELECT `id` FROM `organization` WHERE FIND_IN_SET(`id` ,getChildrenList(#{oid})))
+        </if>
+        <if test="limit != null and limit !=''">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null and offset !=''">
+            OFFSET #{offset}
+        </if>
+    </select>
+</mapper>

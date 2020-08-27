@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.ComplaintLogsDao">
+
+  <select id="countComplaintLogs" resultType="java.lang.Long"
+          parameterType="cn.huaruan.ud24.query.entity.ComplaintLogs">
+    select count(*) from
+    `complaint_logs` where 1=1
+
+  </select>
+
+
+  <select id="findComplaintLogs" resultType="cn.huaruan.ud24.query.entity.ComplaintLogs"
+          parameterType="cn.huaruan.ud24.query.entity.ComplaintLogs">
+    SELECT *
+    FROM `complaint_logs`
+    WHERE 1 = 1
+
+    <if test="limit != null and limit !=''">
+      LIMIT #{limit}
+    </if>
+    <if test="offset != null and offset !=''">
+      OFFSET #{offset}
+    </if>
+  </select>
+</mapper>

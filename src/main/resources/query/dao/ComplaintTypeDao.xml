@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.ComplaintTypeDao">
+
+  <select id="countComplaintType" resultType="java.lang.Long"
+          parameterType="cn.huaruan.ud24.query.entity.ComplaintType">
+    select count(*) from
+    `complaint_type` where 1=1
+    <if test="typeId != null and typeId !=''">
+      and `typeId` like "%"#{typeId}"%"
+    </if>
+    <if test="typeName != null">
+      and `typeName` like "%"#{typeName}"%"
+    </if>
+    <if test="pid != pid">
+      and `pid` = #{pid}
+    </if>
+  </select>
+
+  <select id="findAll" resultType="cn.huaruan.ud24.query.entity.ComplaintType"
+          parameterType="cn.huaruan.ud24.query.entity.ComplaintType">
+    SELECT *
+    FROM `complaint_type`
+  </select>
+
+  <select id="findComplaintType" resultType="cn.huaruan.ud24.query.entity.ComplaintType"
+          parameterType="cn.huaruan.ud24.query.entity.ComplaintType">
+    SELECT *
+    FROM `complaint_type`
+    WHERE 1 = 1
+    <if test="typeId != null and typeId !=''">
+      and `typeId` like "%"#{typeId}"%"
+    </if>
+    <if test="typeName != null">
+      and `typeName` like "%"#{typeName}"%"
+    </if>
+    <if test="pid != pid">
+      and `pid` = #{pid}
+    </if>
+  </select>
+</mapper>

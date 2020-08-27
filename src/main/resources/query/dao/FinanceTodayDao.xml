@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.FinanceTodayDao">
+
+    <select id="findFinanceToday" resultType="cn.huaruan.ud24.query.entity.FinanceToday"
+            parameterType="cn.huaruan.ud24.query.entity.FinanceToday">
+        SELECT *
+        FROM `finance_today`
+        WHERE 1 = 1
+        <if test="franchiseeId != null">
+            and `franchisee_id` = #{franchiseeId}
+        </if>
+    </select>
+
+    <select id="findByOId" resultType="cn.huaruan.ud24.query.entity.FinanceToday">
+        select * from
+        `finance_today` `ft` where 1 = 1
+        <if test="oid != null and oid != ''">
+            and `ft`.`o_id` = #{oid}
+        </if>
+    </select>
+
+    <update id="updateFinanceToday" parameterType="cn.huaruan.ud24.query.entity.FinanceToday">
+        UPDATE `finance_today`
+        <set>
+            <if test="center != null">
+                `center` = #{center},
+            </if>
+            <if test="allocation != null">
+                `allocation` = #{allocation},
+            </if>
+            <if test="sendSite != null">
+                `send_site` = #{sendSite},
+            </if>
+            <if test="receiveSite != null">
+                `receive_site` = #{receiveSite},
+            </if>
+            <if test="picker != null">
+                `picker` = #{picker},
+            </if>
+            <if test="deliver != null">
+                `deliver` = #{deliver},
+            </if>
+            <if test="transportation != null">
+                `transportation` = #{transportation},
+            </if>
+        </set>
+        where `o_id` = #{oId}
+    </update>
+
+
+    <resultMap id="OrganizationWithFinanceNode" type="cn.huaruan.ud24.vo.OrganizationWithFinanceNode">
+        <result column="org_id" jdbcType="VARCHAR" property="orgId"/>
+        <result column="org_pid" jdbcType="VARCHAR" property="orgPid"/>
+        <result column="org_city" jdbcType="VARCHAR" property="orgCity"/>
+        <result column="org_name" jdbcType="VARCHAR" property="orgName"/>
+        <!--运单记录（一对多）-->
+        <association property="todays" javaType="cn.huaruan.ud24.query.entity.FinanceToday">
+            <id column="today_id_to" jdbcType="VARCHAR" property="todayId"/>
+            <result column="center_to" jdbcType="DOUBLE" property="center"/>
+            <result column="allocation_to" jdbcType="DOUBLE" property="allocation"/>
+            <result column="send_site_to" jdbcType="DOUBLE" property="sendSite"/>
+            <result column="o_id_to" jdbcType="VARCHAR" property="oId"/>
+            <result column="receive_site_to" jdbcType="DOUBLE" property="receiveSite"/>
+            <result column="picker_to" jdbcType="DOUBLE" property="picker"/>
+            <result column="deliver_to" jdbcType="DOUBLE" property="deliver"/>
+            <result column="transportation_to" jdbcType="DOUBLE" property="transportation"/>
+        </association>
+        <association property="timely" javaType="cn.huaruan.ud24.query.entity.FinanceTimely">
+            <id column="timely_id_ti" jdbcType="VARCHAR" property="timelyId"/>
+            <result column="center_ti" jdbcType="DOUBLE" property="center"/>
+            <result column="allocation_ti" jdbcType="DOUBLE" property="allocation"/>
+            <result column="site_ti" jdbcType="DOUBLE" property="site"/>
+            <result column="courier_ti" jdbcType="DOUBLE" property="courier"/>
+        </association>
+    </resultMap>
+
+    <select id="findFinanceByOid" resultMap="OrganizationWithFinanceNode"
+            parameterType="cn.huaruan.ud24.vo.FindFinacne">
+        SELECT
+        `org`.`id` `org_id`,
+        `org`.`name` `org_name`,
+        `org`.`parent_id` `org_pid`,
+        `org`.`city` `org_city`,
+        `fti`.timely_id timely_id_ti,
+        `fti`.center center_ti,
+        `fti`.allocation allocation_ti,
+        `fti`.site site_ti,
+        `fti`.courier courier_ti,
+        `fto`.today_id today_id_to,
+        `fto`.center center_to,
+        `fto`.allocation allocation_to,
+        `fto`.send_site send_site_to,
+        `fto`.o_id o_id_to,
+        `fto`.receive_site receive_site_to,
+        `fto`.picker picker_to,
+        `fto`.deliver deliver_to,
+        `fto`.transportation transportation_to
+        FROM (
+        SELECT * FROM `organization`
+        WHERE level &lt;= 3
+        AND mode = 2
+        <if test="orgId != null">
+            AND FIND_IN_SET(`id` ,getChildrenList(#{orgId})))
+        </if>
+        ) `org`
+        LEFT JOIN `finance_timely` `fti` ON `org`.`id` = `fti`.`o_id`
+        LEFT JOIN `finance_today` `fto` ON `org`.`id` = `fto`.`o_id`
+    </select>
+
+
+    <select id="findCalFinanceToday" resultType="cn.huaruan.ud24.query.entity.FinanceToday">
+        SELECT *
+FROM (SELECT *
+        FROM `finance_today`
+        WHERE `o_id`
+        IN (
+            SELECT `id`
+            FROM `organization`
+            WHERE FIND_IN_SET(`id`,getParentList(#{orgId})))
+        ) AS ft
+LEFT JOIN organization `o`
+ON ft.`o_id` = `o`.`id`
+GROUP BY ft.`today_id`
+HAVING
+MAX(`o`.`level`) = (
+    SELECT MAX(`level`)
+    FROM (
+        SELECT *
+        FROM `finance_today`
+        WHERE `o_id`
+        IN (
+            SELECT `id`
+            FROM `organization`
+            WHERE FIND_IN_SET(`id`,getParentList(#{orgId})))
+        ) AS `ft`
+    LEFT JOIN `organization` `o`
+    ON ft.`o_id` = `o`.`id`
+    )
+    </select>
+
+</mapper>

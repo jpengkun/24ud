@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.QuoteTodayDao">
+
+    <select id="countQuoteToday" resultType="java.lang.Long"
+            parameterType="cn.huaruan.ud24.query.entity.QuoteToday">
+        select count(*) from
+        `quote_today` where 1=1
+        <if test="id != null and id !=''">
+            and `id` like "%"#{id}"%"
+        </if>
+        <if test="oId != null">
+            and `o_id` like "%"#{oId}"%"
+        </if>
+    </select>
+
+    <select id="findByOId" resultType="cn.huaruan.ud24.query.entity.QuoteToday">
+        select * from
+        `quote_today` `qt` where 1 = 1
+        <if test="oid != null and oid != ''">
+            and `qt`.`o_id` = #{oid}
+        </if>
+    </select>
+
+    <!--<select id="findByPoint" resultType="cn.huaruan.ud24.query.entity.QuoteToday"-->
+    <!--parameterType="cn.huaruan.ud24.vo.QuoteTodayVodayVo     <!-select *-->
+    <!--from `quote_today` `q` where 1 = 1-->
+    <!--<if test="polygon != null">-->
+    <!--AND ST_contains(`o`.`polygon`, ST_GeomFromText(#{point})) = 1-->
+    <!--</if>-->
+    <!--LEFT JOIN `organization` `o` where `q`.`oid` = `o`.`id`-->
+    <!--</select>-->
+
+
+    <!--<resultMap id="TodaysWbWithLogs" type="cn.huaruan.ud24.vo.TodaysWbWithLogs">-->
+    <!--<id column="oid" jdbcType="VARCHAR" property="id"/>-->
+    <!--<result column="pid" jdbcType="VARCHAR" property="pid"/>-->
+    <!--<result column="name" jdbcType="VARCHAR" property="orgName"/>-->
+    <!--<result column="city" jdbcType="VARCHAR" property="orgCity"/>-->
+    <!--&lt;!&ndash;运单记录（一对多）&ndash;&gt;-->
+    <!--<association property="todays" javaType="cn.huaruan.ud24.query.entity.QuoteToday">-->
+    <!--<id column="id" jdbcType="VARCHAR" property="id"/>-->
+    <!--<result column="weight_method" jdbcType="INTEGER" property="weightMethod"/>-->
+    <!--<result column="operator" jdbcType="VARCHAR" property="operator"/>-->
+    <!--<result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>-->
+    <!--<result column="base_price" jdbcType="DECIMAL" property="basePrice"/>-->
+    <!--<result column="additional_weight" jdbcType="DECIMAL" property="additionalWeight"/>-->
+    <!--<result column="first_weight" jdbcType="DECIMAL" property="firstWeight"/>-->
+    <!--<result column="top_weight" jdbcType="DECIMAL" property="topWeight"/>-->
+    <!--</association>-->
+    <!--<association property="timely" javaType="cn.huaruan.ud24.query.entity.QuoteTimely">-->
+    <!--<id column="id" jdbcType="VARCHAR" property="id"/>-->
+    <!--<result column="weight_method" jdbcType="INTEGER" property="weightMethod"/>-->
+    <!--<result column="operator" jdbcType="VARCHAR" property="operator"/>-->
+    <!--<result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>-->
+    <!--<result column="base_price" jdbcType="DECIMAL" property="basePrice"/>-->
+    <!--<result column="first_weight" jdbcType="DECIMAL" property="firstWeight"/>-->
+    <!--<result column="additional_weight" jdbcType="DECIMAL" property="additionalWeight"/>-->
+    <!--<result column="top_weight" jdbcType="DECIMAL" property="topWeight"/>-->
+    <!--<result column="first_distance" jdbcType="DECIMAL" property="firstDistance"/>-->
+    <!--<result column="first_distance_price" jdbcType="DECIMAL" property="firstDistancePrice"/>-->
+    <!--<result column="second_distance" jdbcType="DECIMAL" property="secondDistance"/>-->
+    <!--<result column="second_distance_price" jdbcType="DECIMAL" property="secondDistancePrice"/>-->
+    <!--<result column="additional_distance" jdbcType="DECIMAL" property="additionalDistance"/>-->
+    <!--</association>-->
+    <!--</resultMap>-->
+
+    <select id="findCalQuoteToday" resultType="cn.huaruan.ud24.query.entity.QuoteToday">
+        SELECT *
+FROM (SELECT *
+        FROM `quote_today`
+        WHERE `o_id`
+        IN (
+            SELECT `id`
+            FROM `organization`
+            WHERE FIND_IN_SET(`id`,getParentList(#{orgId})))
+        ) AS `q`
+LEFT JOIN organization `o`
+ON `q`.`o_id` = `o`.`id`
+GROUP BY `q`.`id`
+HAVING
+MAX(`o`.`level`) = (
+    SELECT MAX(`level`)
+    FROM (
+        SELECT *
+        FROM `quote_today`
+        WHERE `o_id`
+        IN (
+            SELECT `id`
+            FROM `organization`
+            WHERE FIND_IN_SET(`id`,getParentList(#{orgId})))
+        ) AS `q`
+    LEFT JOIN `organization` `o`
+    ON `q`.`o_id` = `o`.`id`
+    )
+    </select>
+
+</mapper>

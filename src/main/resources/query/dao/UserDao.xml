@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.UserDao">
+    <select id="countUser" resultType="java.lang.Long"
+            parameterType="cn.huaruan.ud24.vo.FindUserParam">
+        select count(*) from
+        `user` `user` where 1
+        <if test="username != null and username !=''">
+            and `user`.`username` like #{username}
+        </if>
+        <if test="nickname != null and nickname !=''">
+            and `user`.`nickname` like #{nickname}
+        </if>
+        <if test="orgId != null and orgId !=''">
+            AND `user`.`org_id`
+            IN (SELECT id
+            FROM organization
+            WHERE FIND_IN_SET(`id`,getChildrenList(#{orgId})))
+        </if>
+    </select>
+
+    <resultMap id="UserWithRole" type="cn.huaruan.ud24.vo.UserWithRole">
+        <id column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="nickname" jdbcType="VARCHAR" property="nickname"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="org_id" jdbcType="VARCHAR" property="orgId"/>
+        <result column="org_name" jdbcType="VARCHAR" property="orgName"/>
+        <result column="operate_org_id" jdbcType="VARCHAR" property="operateOrgId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <!--用户下的角色（一对多）-->
+        <collection property="roles" ofType="cn.huaruan.ud24.query.entity.Role">
+            <id column="role_id" jdbcType="BIGINT" property="roleId"/>
+            <result column="name" jdbcType="VARCHAR" property="name"/>
+            <result column="role_create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        </collection>
+    </resultMap>
+
+    <select id="findUserWithRole" resultMap="UserWithRole"
+            parameterType="cn.huaruan.ud24.vo.FindUserParam">
+        SELECT
+        `user`.`create_time`,
+        `user`.`nickname`,
+        `user`.`password`,
+        `user`.`user_id`,
+        `user`.`username`,
+        `user`.`phone`,
+        `user`.`org_id`,
+        `user`.`operate_org_id`,
+        `organization`.`name` `org_name`,
+        `user`.`status`,
+        `role`.`create_time` as role_create_time,
+        `role`.`name`,
+        `role`.`role_id`
+        FROM (
+        SELECT
+        `user`.`create_time`,
+        `user`.`phone`,
+        `user`.`status`,
+        `user`.`org_id`,
+        `user`.`nickname`,
+        `user`.`password`,
+        `user`.`user_id`,
+        `user`.`operate_org_id`,
+        `user`.`username`
+        FROM
+        `user` `user`
+        WHERE 1 = 1
+        <if test="username != null and username !=''">
+            AND `user`.`username` LIKE #{username}
+        </if>
+        <if test="nickname != null and nickname !=''">
+            AND `user`.`nickname` LIKE #{nickname}
+        </if>
+        <if test="orgId != null and orgId !=''">
+            AND `user`.`org_id`
+            IN (SELECT id
+                FROM organization
+                WHERE FIND_IN_SET(`id`,getChildrenList(#{orgId})))
+        </if>
+        <if test="limit != null and limit !=''">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null and offset !=''">
+            OFFSET #{offset}
+        </if>
+        ) AS `user`
+        LEFT JOIN user_role `user_role` ON `user`.`user_id` = `user_role`.`user_id`
+        LEFT JOIN `role` `role` ON `user_role`.`role_id` = `role`.`role_id`
+        LEFT JOIN `organization` `organization` ON `user`.`org_id` = `organization`.`id`
+    </select>
+</mapper>

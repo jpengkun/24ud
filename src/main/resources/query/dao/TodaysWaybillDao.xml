@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.TodaysWaybillDao">
+
+    <insert id="insertWithLocation" parameterType="cn.huaruan.ud24.vo.TodaysWaybillVo">
+        INSERT INTO todays_waybill (id, td_no, dest_code,
+          start_org_id, dest_org_id, source_type,
+          sender, sender_phone, sender_address,
+          sender_location, receiver, receiver_phone,
+          receiver_address, receiver_location, goods_weight,
+          goods_info, remarks, expect_arrive_time,
+          create_time, update_time,open_id, pay_type,
+          pay_status, amount, confirm, state, third_part_no)
+        VALUES (#{id,jdbcType=VARCHAR}, #{tdNo,jdbcType=VARCHAR}, #{destCode,jdbcType=VARCHAR},
+          #{startOrgId,jdbcType=VARCHAR}, #{destOrgId,jdbcType=VARCHAR}, #{sourceType,jdbcType=INTEGER},
+          #{sender,jdbcType=VARCHAR}, #{senderPhone,jdbcType=VARCHAR}, #{senderAddress,jdbcType=VARCHAR},
+          ST_GeomFromText(#{senderLocation}), #{receiver,jdbcType=VARCHAR}, #{receiverPhone,jdbcType=VARCHAR},
+          #{receiverAddress,jdbcType=VARCHAR}, ST_GeomFromText(#{receiverLocation}), #{goodsWeight,jdbcType=DECIMAL},
+          #{goodsInfo,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{expectArriveTime,jdbcType=VARCHAR},
+          #{createTime,jdbcType=TIMESTAMP},#{updateTime,jdbcType=TIMESTAMP}, #{openId,jdbcType=VARCHAR}, #{payType,jdbcType=INTEGER},
+          #{payStatus,jdbcType=TINYINT}, #{amount,jdbcType=DECIMAL}, #{confirm,jdbcType=TINYINT},#{state,jdbcType=INTEGER},#{thirdPartNo,jdbcType=INTEGER})
+    </insert>
+
+    <update id="updateStateById">
+        UPDATE `todays_waybill` SET `state` = #{state} ,`update_time` = #{date} WHERE id = #{id}
+    </update>
+
+    <update id="payById">
+        UPDATE `todays_waybill` SET pay_status = 1 WHERE id = #{id}
+    </update>
+
+    <update id="updateWithLocationById" parameterType="cn.huaruan.ud24.vo.TodaysWaybillVo">
+        UPDATE `todays_waybill`
+        <set>
+            <if test="tdNo != null">
+                td_no = #{tdNo,jdbcType=VARCHAR},
+            </if>
+            <if test="destCode != null">
+                dest_code = #{destCode,jdbcType=VARCHAR},
+            </if>
+            <if test="startOrgId != null">
+                start_org_id = #{startOrgId,jdbcType=VARCHAR},
+            </if>
+            <if test="destOrgId != null">
+                dest_org_id = #{destOrgId,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceType != null">
+                source_type = #{sourceType,jdbcType=INTEGER},
+            </if>
+            <if test="sender != null">
+                sender = #{sender,jdbcType=VARCHAR},
+            </if>
+            <if test="senderPhone != null">
+                sender_phone = #{senderPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="senderAddress != null">
+                sender_address = #{senderAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="senderLocation != null">
+                sender_location = ST_GeomFromText(#{senderLocation}),
+            </if>
+            <if test="receiver != null">
+                receiver = #{receiver,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverPhone != null">
+                receiver_phone = #{receiverPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverAddress != null">
+                receiver_address = #{receiverAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverLocation != null">
+                receiver_location = ST_GeomFromText(#{receiverLocation}),
+            </if>
+            <if test="goodsWeight != null">
+                goods_weight = #{goodsWeight,jdbcType=DECIMAL},
+            </if>
+            <if test="goodsInfo != null">
+                goods_info = #{goodsInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="expectArriveTime != null">
+                expect_arrive_time = #{expectArriveTime,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="openId != null">
+                open_id = #{openId,jdbcType=VARCHAR},
+            </if>
+            <if test="payType != null">
+                pay_type = #{payType,jdbcType=INTEGER},
+            </if>
+            <if test="payStatus != null">
+                pay_status = #{payStatus,jdbcType=TINYINT},
+            </if>
+            <if test="amount != null">
+                amount = #{amount,jdbcType=DECIMAL},
+            </if>
+            <if test="confirm != null">
+                confirm = #{confirm,jdbcType=TINYINT},
+            </if>
+            <if test="state != null">
+                state = #{state,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=INTEGER},
+            </if>
+            <if test="thirdPartNo != null">
+                third_part_no = #{thirdPartNo,jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE `id` = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <sql id="columnList">
+        `tw`.`id`,
+        `tw`.`td_no`,
+        `tw`.`dest_code`,
+        `tw`.`start_org_id`,
+        `tw`.`dest_org_id`,
+        `tw`.`source_type`,
+        `tw`.`sender`,
+        `tw`.`sender_phone`,
+        `tw`.`sender_address`,
+        ST_AsText(`tw`.`sender_location`) AS `sender_location`,
+        `tw`.`receiver`,
+        `tw`.`receiver_phone`,
+        `tw`.`receiver_address`,
+        `tw`.`open_id`,
+        ST_AsText(`tw`.`receiver_location`) AS `receiver_location`,
+        `tw`.`goods_weight`,
+        `tw`.`goods_info`,
+        `tw`.`remarks`,
+        `tw`.`amount`,
+        `tw`.`expect_arrive_time`,
+        `tw`.`create_time`,
+        `tw`.`update_time`,
+        `tw`.`pay_type`,
+        `tw`.`pay_status`,
+        `tw`.`confirm`,
+        `tw`.`state` td_state,
+        `tw`.`third_part_no`,
+        `sorg`.`name` `start_org_name`,
+        `dorg`.`name` `dest_org_name`,
+        `twl`.courier_id,
+        `twl`.`state` `l_state`,
+        `twl`.`detail`,
+        `twl`.`abnormal_type`,
+        `twl`.`next_site_id`,
+        `twl`.`img`,
+        `twl`.`remarks` `l_remarks`,
+        `twl`.`create_time` `l_create_time`,
+        `lorg`.`name` `next_site_name`,
+        `oorg`.`name` `org_name`,
+        `oorg`.`id` `org_id`,
+        `tc`.`name` `c_name`,
+        `tc`.`phone` `c_phone`,
+        `u`.`username` user_name
+    </sql>
+
+    <sql id="findWaybillParam">
+        <if test="wbNo != null">
+            AND `td_no` LIKE "%"#{wbNo}"%"
+        </if>
+        <if test="wbNoList != null and wbNoList.size() > 0">
+            AND `td_no`
+            <foreach collection="wbNoList" item="item" index="index" separator=" OR `td_no` ">
+                LIKE "%"#{item}"%"
+            </foreach>
+        </if>
+        <if test="sender != null">
+            AND `sender` LIKE "%"#{sender}"%"
+        </if>
+        <if test="senderPhone != null">
+            AND `sender_phone` LIKE "%"#{senderPhone}"%"
+        </if>
+        <if test="senderAddress != null">
+            AND `sender_address` LIKE "%"#{senderAddress}"%"
+        </if>
+        <if test="receiver != null">
+            AND `receiver` LIKE "%"#{receiver}"%"
+        </if>
+        <if test="receiverPhone != null">
+            AND `receiver_phone` LIKE "%"#{receiverPhone}"%"
+        </if>
+        <if test="receiverAddress != null">
+            AND `receiver_address` LIKE "%"#{receiverAddress}"%"
+        </if>
+        <if test="thirdPartNo != null">
+            AND `third_part_no` LIKE "%"#{thirdPartNo}"%"
+        </if>
+        <if test="lastOpTimeStart != null">
+            AND `update_time` &gt;= #{lastOpTimeStart}
+        </if>
+        <if test="lastOpTimeEnd != null">
+            AND `update_time` &lt;= #{lastOpTimeEnd}
+        </if>
+        <if test="createTimeStart != null">
+            AND `create_time` &gt;= #{createTimeStart}
+        </if>
+        <if test="createTimeEnd != null">
+            AND `create_time` &lt;= #{createTimeEnd}
+        </if>
+        <if test="orgId != null and orgId !=''and state != null">
+            AND `state` = #{state}
+            <!--            <if test="transfer == 0">-->
+            <!--                AND dest_org_id IN (SELECT `id`-->
+            <!--                FROM `organization`-->
+            <!--                WHERE FIND_IN_SET(`id` ,getChildrenList(#{orgId})))-->
+            <!--            </if>-->
+            <!--            <if test="transfer == 1">-->
+            <!--                AND dest_org_id NOT IN (SELECT `id`-->
+            <!--                FROM `organization`-->
+            <!--                WHERE FIND_IN_SET(`id` ,getChildrenList(#{orgId})))-->
+            <!--            </if>-->
+            <!--                AND `id`-->
+            <!--                IN (SELECT DISTINCT `wb_id`-->
+            <!--                    FROM `todays_wb_log`-->
+            <!--                    WHERE `org_id` IN (SELECT `id`-->
+            <!--                    FROM `organization`-->
+            <!--                    WHERE FIND_IN_SET(`id` ,getChildrenList(#{orgId}))))-->
+            <choose>
+                <when test="state lte 3">
+                    AND `start_org_id` IN (SELECT `id` FROM `organization` WHERE FIND_IN_SET(`id`
+                    ,getChildrenList(#{orgId})))
+                </when>
+                <when test="state == 4 or state == 5 and transfer == 1">
+                    AND `id` IN (SELECT `wb_id`
+                    FROM `todays_wb_log`
+                    WHERE `next_site_id` IN (SELECT `id`
+                    FROM `organization`
+                    WHERE FIND_IN_SET(`id`,
+                    getChildrenList(#{orgId})))
+                    GROUP BY wb_id
+                    HAVING MAX(state) = #{state})
+                </when>
+                <when test="state gte 5 and transfer != 1">
+                    AND `dest_org_id` IN (SELECT `id` FROM `organization` WHERE FIND_IN_SET(`id`
+                    ,getChildrenList(#{orgId})))
+                </when>
+                <otherwise/>
+            </choose>
+        </if>
+    </sql>
+
+    <sql id="pageParam">
+        <if test="limit != null and limit !=''">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null and offset !=''">
+            OFFSET #{offset}
+        </if>
+    </sql>
+
+    <sql id="joinList">
+        LEFT JOIN `organization` `sorg` ON `tw`.`start_org_id` = `sorg`.`id`
+        LEFT JOIN `organization` `dorg` ON `tw`.`dest_org_id` = `dorg`.`id`
+        LEFT JOIN `todays_wb_log` `twl` ON `tw`.`id` = `twl`.`wb_id`
+        LEFT JOIN `organization` `lorg` ON `twl`.`next_site_id` = `lorg`.`id`
+        LEFT JOIN `organization` `oorg` ON `twl`.`org_id` = `oorg`.`id`
+        LEFT JOIN `todays_courier` `tc` ON `twl`.`courier_id` = `tc`.`id`
+        LEFT JOIN `user` `u` ON `twl`.`user_id` = `u`.`user_id`
+    </sql>
+
+    <sql id="orderList">
+        ORDER BY
+        `tw`.`update_time` DESC,
+        `twl`.`create_time` ASC,
+        (CASE
+        WHEN `twl`.`state` = 0 THEN 0
+        ELSE 1
+        END)
+    </sql>
+
+    <resultMap id="TodaysWbWithLogs" type="cn.huaruan.ud24.vo.TodaysWbWithLogs">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="td_no" jdbcType="VARCHAR" property="tdNo"/>
+        <result column="dest_code" jdbcType="VARCHAR" property="destCode"/>
+        <result column="start_org_id" jdbcType="VARCHAR" property="startOrgId"/>
+        <result column="dest_org_id" jdbcType="VARCHAR" property="destOrgId"/>
+        <result column="source_type" jdbcType="INTEGER" property="sourceType"/>
+        <result column="sender" jdbcType="VARCHAR" property="sender"/>
+        <result column="sender_phone" jdbcType="VARCHAR" property="senderPhone"/>
+        <result column="sender_address" jdbcType="VARCHAR" property="senderAddress"/>
+        <result column="sender_location" jdbcType="OTHER" property="senderLocation"/>
+        <result column="receiver" jdbcType="VARCHAR" property="receiver"/>
+        <result column="receiver_phone" jdbcType="VARCHAR" property="receiverPhone"/>
+        <result column="receiver_address" jdbcType="VARCHAR" property="receiverAddress"/>
+        <result column="receiver_location" jdbcType="OTHER" property="receiverLocation"/>
+        <result column="goods_weight" jdbcType="DECIMAL" property="goodsWeight"/>
+        <result column="goods_info" jdbcType="VARCHAR" property="goodsInfo"/>
+        <result column="remarks" jdbcType="VARCHAR" property="remarks"/>
+        <result column="expect_arrive_time" jdbcType="VARCHAR" property="expectArriveTime"/>
+        <result column="open_id" jdbcType="VARCHAR" property="openId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="start_org_name" jdbcType="VARCHAR" property="startOrgName"/>
+        <result column="dest_org_name" jdbcType="VARCHAR" property="destOrgName"/>
+        <result column="pay_type" jdbcType="VARCHAR" property="payType"/>
+        <result column="pay_status" jdbcType="TINYINT" property="payStatus"/>
+        <result column="amount" jdbcType="DECIMAL" property="amount"/>
+        <result column="confirm" jdbcType="TINYINT" property="confirm"/>
+        <result column="td_state" jdbcType="INTEGER" property="state"/>
+        <result column="third_part_no" jdbcType="VARCHAR" property="thirdPartNo"/>
+        <!--运单记录（一对多）-->
+        <collection property="logs" ofType="cn.huaruan.ud24.vo.TodaysWbLogWithCourInfo">
+            <result column="courier_id" jdbcType="VARCHAR" property="courierId"/>
+            <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+            <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+            <result column="org_id" jdbcType="VARCHAR" property="orgId"/>
+            <result column="org_name" jdbcType="VARCHAR" property="orgName"/>
+            <result column="l_state" jdbcType="INTEGER" property="state"/>
+            <result column="abnormal_type" jdbcType="VARCHAR" property="abnormalType"/>
+            <result column="img" jdbcType="LONGVARCHAR" property="img"/>
+            <result column="next_site_id" jdbcType="VARCHAR" property="nextSiteId"/>
+            <result column="next_site_name" jdbcType="VARCHAR" property="nextSiteName"/>
+            <result column="detail" jdbcType="VARCHAR" property="detail"/>
+            <result column="c_name" jdbcType="VARCHAR" property="courierName"/>
+            <result column="c_phone" jdbcType="VARCHAR" property="courierPhone"/>
+            <result column="l_create_time" jdbcType="TIMESTAMP" property="createTime"/>
+            <result column="l_remarks" jdbcType="VARCHAR" property="remarks"/>
+        </collection>
+    </resultMap>
+
+    <select id="countTodaysWaybill" resultType="Long"
+            parameterType="cn.huaruan.ud24.vo.FindWaybillParam">
+        SELECT count(*)
+        FROM `todays_waybill`
+        WHERE 1 = 1
+        <include refid="findWaybillParam"/>
+    </select>
+
+    <select id="findTodaysWaybillWithLogs" resultMap="TodaysWbWithLogs"
+            parameterType="cn.huaruan.ud24.vo.FindWaybillParam">
+        SELECT
+        <include refid="columnList"/>
+        FROM (
+        SELECT *
+        FROM `todays_waybill` `tw`
+        WHERE 1 = 1
+        <include refid="findWaybillParam"/>
+        <include refid="pageParam"/>
+        ) AS `tw`
+        <include refid="joinList"/>
+        <include refid="orderList"/>
+    </select>
+
+    <select id="countByCourierIdAndState" parameterType="cn.huaruan.ud24.vo.FindWbByCidAndState"
+            resultType="long">
+        SELECT count(*)
+        FROM `todays_waybill`
+        WHERE `state` = #{state}
+        AND `id` IN (SELECT `wb_id`
+        FROM `todays_wb_log`
+        WHERE `courier_id` = #{courierId}
+        <choose>
+            <when test="state == 1 or state == 2 ">
+                AND `state` &lt;= #{state} AND `state` &gt; 0
+            </when>
+            <when test="state == 6 or state == 7 ">
+                AND `state` &lt;= #{state} AND `state` &gt; 5
+            </when>
+            <otherwise/>
+        </choose>
+        )
+    </select>
+
+    <select id="findByCourierIdAndState" parameterType="cn.huaruan.ud24.vo.FindWbByCidAndState"
+            resultMap="TodaysWbWithLogs">
+        SELECT
+        <include refid="columnList"/>
+        FROM (SELECT *
+        FROM `todays_waybill`
+        WHERE `state` = #{state}
+        AND `id` IN (SELECT `wb_id`
+        FROM `todays_wb_log`
+        WHERE `courier_id` = #{courierId}
+        <choose>
+            <when test="state == 1 or state == 2 ">
+                AND `state` &lt;= #{state} AND `state` &gt; 0
+            </when>
+            <when test="state == 6 or state == 7 ">
+                AND `state` &lt;= #{state} AND `state` &gt; 5
+            </when>
+            <otherwise/>
+        </choose>
+        )
+        <include refid="pageParam"/>
+        ) AS `tw`
+        <include refid="joinList"/>
+        <include refid="orderList"/>
+    </select>
+
+
+    <select id="findById" resultMap="TodaysWbWithLogs">
+        SELECT
+        <include refid="columnList"/>
+        FROM (
+        SELECT *
+        FROM `todays_waybill` `tw`
+        WHERE `tw`.`id` = #{id}
+        ) AS `tw`
+        <include refid="joinList"/>
+        ORDER BY
+        `twl`.`create_time` ASC,
+        (CASE
+        WHEN `twl`.`state` = 0 THEN 0
+        ELSE 1
+        END)
+    </select>
+
+    <select id="findByIdIn" resultMap="TodaysWbWithLogs">
+        SELECT
+        <include refid="columnList"/>
+        FROM (
+        SELECT *
+        FROM `todays_waybill` `tw`
+        WHERE `tw`.`id` IN(
+        <foreach collection="list" item="item" index="index" separator=",">
+            #{item}
+        </foreach>
+        )
+        ) AS `tw`
+        <include refid="joinList"/>
+        ORDER BY
+        `twl`.`create_time` ASC,
+        (CASE
+        WHEN `twl`.`state` = 0 THEN 0
+        ELSE 1
+        END)
+    </select>
+
+    <select id="findByNo" resultMap="TodaysWbWithLogs">
+        SELECT
+        <include refid="columnList"/>
+        FROM (
+        SELECT *
+        FROM `todays_waybill` `tw`
+        WHERE `tw`.`td_no` = #{no}
+        ) AS `tw`
+        <include refid="joinList"/>
+        ORDER BY
+        `twl`.`create_time` ASC,
+        (CASE
+        WHEN `twl`.`state` = 0 THEN 0
+        ELSE 1
+        END)
+    </select>
+
+    <select id="countByOpenId" resultType="long"
+            parameterType="cn.huaruan.ud24.vo.FindWbByOpenId">
+        SELECT count(*)
+        FROM `todays_waybill`
+        WHERE 1 = 1
+        <if test="openId != null and openId !=''">
+            AND `open_id` = #{openId}
+        </if>
+        <if test="payStatus != null ">
+            AND `pay_status` = #{payStatus}
+        </if>
+        <if test="state != null ">
+            AND `state` = #{state}
+        </if>
+    </select>
+
+    <select id="findByOpenId" resultMap="TodaysWbWithLogs"
+            parameterType="cn.huaruan.ud24.vo.FindWbByOpenId">
+        SELECT
+        <include refid="columnList"/>
+        FROM (
+        SELECT *
+        FROM `todays_waybill`
+        WHERE 1 = 1
+        <if test="openId != null and openId !=''">
+            AND `open_id` = #{openId}
+        </if>
+        <if test="payStatus != null ">
+            AND `pay_status` = #{payStatus}
+        </if>
+        <if test="state != null ">
+            AND `state` = #{state}
+        </if>
+        <include refid="pageParam"/>
+        ) AS `tw`
+        <include refid="joinList"/>
+        ORDER BY
+        `tw`.`pay_status` ASC,
+        `tw`.`create_time` DESC,
+        `twl`.`create_time` ASC,
+        (CASE
+        WHEN `twl`.`state` = 0 THEN 0
+        ELSE 1
+        END)
+    </select>
+
+
+    <select id="countWaybill4Vip" resultType="Long"
+            parameterType="cn.huaruan.ud24.vo.FindWaybillParam">
+        SELECT count(*)
+        FROM `todays_waybill`
+        WHERE 1 = 1
+        <if test="wbNo != null and wbNo !=''">
+            AND `td_no` LIKE "%"#{wbNo}"%"
+        </if>
+        <if test="state != null ">
+            AND `state` = #{state}
+        </if>
+        <if test="type == 0 ">
+            AND `open_id` IN (SELECT v_user_id FROM vip_user WHERE type = 1)
+        </if>
+        <if test="type == 1 ">
+            <if test="vipUserId != null and vipUserId != '' ">
+                AND `open_id` = #{vipUserId}
+            </if>
+        </if>
+    </select>
+
+    <select id="findWaybill4Vip" resultMap="TodaysWbWithLogs"
+            parameterType="cn.huaruan.ud24.vo.FindWaybill4VipParam">
+        SELECT
+        <include refid="columnList"/>
+        FROM (
+        SELECT *
+        FROM `todays_waybill` `tw`
+        WHERE 1 = 1
+        <if test="wbNo != null and wbNo !=''">
+            AND `td_no` LIKE "%"#{wbNo}"%"
+        </if>
+        <if test="state != null ">
+            AND `state` = #{state}
+        </if>
+        <if test="type == 0 ">
+            AND `open_id` IN (SELECT v_user_id FROM vip_user WHERE type = 1)
+        </if>
+        <if test="type == 1 ">
+            <if test="vipUserId != null and vipUserId != '' ">
+                AND `open_id` = #{vipUserId}
+            </if>
+        </if>
+        <include refid="pageParam"/>
+        ) AS `tw`
+        <include refid="joinList"/>
+        <include refid="orderList"/>
+    </select>
+
+
+    <select id="find4Stmt" resultType="java.lang.String">
+        SELECT `id`
+        FROM (SELECT *
+        FROM `todays_waybill`
+        WHERE `state` = #{state}
+        AND `id` IN (SELECT `wb_id`
+        FROM `todays_wb_log`
+        WHERE `courier_id` = #{courierId}
+        <choose>
+            <when test="state == 1 or state == 2 ">
+                AND `state` &lt;= #{state} AND `state` &gt; 0
+            </when>
+            <when test="state == 6 or state == 7 ">
+                AND `state` &lt;= #{state} AND `state` &gt; 5
+            </when>
+            <otherwise/>
+        </choose>
+        <if test="timeStart != null and timeEnd != null">
+            AND `create_time` BETWEEN #{timeStart} AND #{timeEnd}
+        </if>
+        )) AS `tw`
+    </select>
+</mapper>

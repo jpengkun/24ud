@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.RoleDao">
+
+  <select id="countRole" resultType="java.lang.Long"
+          parameterType="cn.huaruan.ud24.vo.FindRoleParam">
+    select count(*)
+    from `role` `role`
+    <if test="name != null and name !=''">
+      where `role`.`name` like "%"#{name}"%"
+    </if>
+  </select>
+
+  <resultMap id="RoleWithAuthority" type="cn.huaruan.ud24.vo.RoleWithAuthority">
+    <id column="role_id" jdbcType="VARCHAR" property="roleId"/>
+    <result column="name" jdbcType="VARCHAR" property="name"/>
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    <!--角色下的权限（一对多）-->
+    <collection property="authorities" ofType="cn.huaruan.ud24.query.entity.Authority">
+      <id column="authority_id" jdbcType="VARCHAR" property="authorityId"/>
+      <result column="authority_name" jdbcType="VARCHAR" property="name"/>
+      <result column="code" jdbcType="VARCHAR" property="code"/>
+      <result column="type" jdbcType="VARCHAR" property="type"/>
+      <result column="parent_id" jdbcType="VARCHAR" property="parentId"/>
+      <result column="authority_create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </collection>
+  </resultMap>
+
+  <select id="findRoleWithAuthority" resultMap="RoleWithAuthority"
+          parameterType="cn.huaruan.ud24.vo.FindRoleParam">
+    SELECT
+    `role`.`create_time`,
+    `role`.`name`,
+    `role`.`role_id`,
+    `authority`.`authority_id`,
+    `authority`.`code`,
+    `authority`.`create_time` as authority_create_time,
+    `authority`.`name` as authority_name,
+    `authority`.`parent_id`,
+    `authority`.`type`
+    FROM
+    (SELECT
+    `role`.`create_time`,
+    `role`.`name`,
+    `role`.`role_id`
+    FROM
+    `role` `role`
+    <if test="name != null and name !=''">
+      where `role`.`name` like "%"#{name}"%"
+    </if>
+    <if test="limit != null and limit !=''">
+      LIMIT #{limit}
+    </if>
+    <if test="offset != null and offset !=''">
+      OFFSET #{offset}
+    </if>
+    ) AS `role`
+    LEFT JOIN `role_authority` `role_authority` ON `role`.`role_id` = `role_authority`.`role_id`
+    LEFT JOIN `authority` `authority` ON `role_authority`.`authority_id` = `authority`.`authority_id`
+  </select>
+</mapper>

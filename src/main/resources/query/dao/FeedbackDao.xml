@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.FeedbackDao">
+    <select id="countFeedback" resultType="java.lang.Long">
+        SELECT count(*) FROM
+        `feedback`
+    </select>
+    <select id="getAllFeedBackByPage" resultType="cn.huaruan.ud24.query.entity.Feedback"
+            parameterType="cn.huaruan.ud24.application.query.PageParam">
+        SELECT *
+        FROM `feedback`
+        WHERE 1=1
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null">
+            OFFSET #{offset}
+        </if>
+    </select>
+</mapper>

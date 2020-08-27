@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.WithdrawalAuditDao">
+    <select id="countAudit" resultType="java.lang.Long"
+            parameterType="cn.huaruan.ud24.vo.FindWithdrawalAuditParam">
+        SELECT count(*) FROM
+        `withdrawal_audit` `audit`
+        WHERE 1=1
+        <if test="courierName != null and courierName != ''">
+            AND `audit`.courier_name LIKE "%"#{courierName}"%"
+        </if>
+        <if test="status != null">
+            AND `audit`.status = #{status}
+        </if>
+        <if test="starTime != null and endTime != null">
+            AND `audit`.apply_time BETWEEN #{starTime} AND #{endTime}
+        </if>
+    </select>
+    <select id="findAudit" resultType="cn.huaruan.ud24.query.entity.WithdrawalAudit"
+            parameterType="cn.huaruan.ud24.vo.FindWithdrawalAuditParam">
+        SELECT * FROM
+        `withdrawal_audit` `audit`
+        WHERE 1=1
+        <if test="courierName != null and courierName != ''">
+            AND `audit`.courier_name LIKE "%"#{courierName}"%"
+        </if>
+        <if test="status != null">
+            AND `audit`.status = #{status}
+        </if>
+        <if test="starTime != null and endTime != null">
+            AND `audit`.apply_time BETWEEN #{starTime} AND #{endTime}
+        </if>
+        ORDER BY `audit`.apply_time DESC
+        <if test="limit != null and limit !=''">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null and offset !=''">
+            OFFSET #{offset}
+        </if>
+    </select>
+    
+    <update id="updateStatus" parameterType="cn.huaruan.ud24.vo.UpdateAuditStatusVo">
+        UPDATE `withdrawal_audit`
+        SET `withdrawal_audit`.status = #{status}
+        WHERE `withdrawal_audit`.courier_id IN
+        <foreach collection="courierIds" item="item" index="index" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

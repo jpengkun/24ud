@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.BillDao">
+    <select id="countBill" resultType="java.lang.Long"
+            parameterType="cn.huaruan.ud24.vo.FindBillParam">
+        SELECT count(*) FROM
+        `bill`
+        WHERE 1=1
+        <if test="courierId != null and courierId != ''">
+            AND `bill`.courier_id = #{courierId}
+        </if>
+        <if test="type != null">
+            AND `bill`.type = #{type}
+        </if>
+        <if test="starTime != null and endTime != null">
+            AND `bill`.create_time BETWEEN #{starTime} AND #{endTime}
+        </if>
+        <if test="status != null">
+            AND `bill`.status = #{status}
+        </if>
+    </select>
+    <select id="findBill" resultType="cn.huaruan.ud24.query.entity.Bill"
+            parameterType="cn.huaruan.ud24.vo.FindBillParam">
+        SELECT * FROM
+        `bill`
+        WHERE 1=1
+        <if test="courierId != null and courierId != ''">
+            AND `bill`.courier_id = #{courierId}
+        </if>
+        <if test="type != null">
+            AND `bill`.type = #{type}
+        </if>
+        <if test="starTime != null and endTime != null">
+            AND `bill`.create_time BETWEEN #{starTime} AND #{endTime}
+        </if>
+        <if test="status != null">
+            AND `bill`.status = #{status}
+        </if>
+        ORDER BY `bill`.create_time DESC
+        <if test="limit != null and limit !=''">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null and offset !=''">
+            OFFSET #{offset}
+        </if>
+    </select>
+
+    <select id="countIncome" resultType="java.math.BigDecimal">
+        SELECT sum(`bill`.money)
+        FROM `bill`
+        WHERE `bill`.`courier_id` = #{courierId}
+        AND `bill`.`create_time` BETWEEN #{starTime} AND #{endTime}
+    </select>
+</mapper>

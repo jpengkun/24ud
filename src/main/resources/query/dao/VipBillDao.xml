@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.VipBillDao">
+    <select id="countVipBill" resultType="java.lang.Long"
+            parameterType="cn.huaruan.ud24.vo.FindVipBillParam">
+        select count(*)
+        from
+        `vip_bill` `vip`
+        where 1 = 1
+        <if test="userId != null and userId !=''">
+            and `vip`.`user_id` = #{userId}
+        </if>
+        <if test="paymentState != null">
+            and `vip`.`payment_state` = #{paymentState}
+        </if>
+        <if test="starTime != null and endTime != null">
+            AND `vip`.create_time BETWEEN #{starTime} AND #{endTime}
+        </if>
+    </select>
+
+    <resultMap id="BaseResultMap" type="cn.huaruan.ud24.vo.VipBillWithWaybill">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="payment_state" jdbcType="INTEGER" property="paymentState"/>
+        <result column="count" jdbcType="INTEGER" property="count"/>
+        <result column="amount" jdbcType="DECIMAL" property="amount"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <collection property="waybills" ofType="java.lang.String">
+            <id column="order_id" jdbcType="VARCHAR" property="waybills"/>
+        </collection>
+    </resultMap>
+
+    <select id="findBillWithWaybill" resultMap="BaseResultMap"
+            parameterType="cn.huaruan.ud24.vo.FindUserParam">
+        SELECT
+        `vip`.`id`,
+        `vip`.`user_id`,
+        `vip`.`payment_state`,
+        `vip`.`count`,
+        `vip`.`amount`,
+        `vip`.`create_time`,
+        `vw`.order_id
+        FROM (
+        SELECT
+        `vip`.`id`,
+        `vip`.`user_id`,
+        `vip`.`payment_state`,
+        `vip`.`count`,
+        `vip`.`amount`,
+        `vip`.`create_time`
+        FROM
+        `vip_bill` `vip`
+        WHERE 1 = 1
+        <if test="userId != null and userId !=''">
+            and `vip`.`user_id` like #{userId}
+        </if>
+        <if test="paymentState != null">
+            and `vip`.`payment_state` = #{paymentState}
+        </if>
+        <if test="starTime != null and endTime != null">
+            AND `vip`.create_time BETWEEN #{starTime} AND #{endTime}
+        </if>
+        ORDER BY `vip`.create_time DESC
+        <if test="limit != null and limit !=''">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null and offset !=''">
+            OFFSET #{offset}
+        </if>
+        ) AS `vip`
+        LEFT JOIN `vip_waybill` `vw` ON `vw`.`user_id` = `vip`.`user_id` AND `vw`.bill_id = `vip`.id
+    </select>
+</mapper>

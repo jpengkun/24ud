@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+    PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+    "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+
+  <!-- 相关依赖已在Maven插件配置中引入，此处不需要Jar包依赖 -->
+
+  <context id="cn.huaruan.ud24.mybatis" targetRuntime="MyBatis3" defaultModelType="flat">
+
+
+    <!--添加自定义生成规则-->
+    <plugin type="cn.huaruan.ud24.application.config.mybatis.MyGeneratorPlugin" />
+
+    <!-- 屏蔽注释的生成 -->
+    <commentGenerator>
+      <property name="suppressAllComments" value="true"/>
+      <property name="suppressDate" value="true"/>
+    </commentGenerator>
+
+    <!-- 配置数据库连接 -->
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                    connectionURL="jdbc:mysql://39.98.153.56:3306/24ud?characterEncoding=utf8"
+                    userId="root"
+                    password="hrSoft2019!2#">
+      <property name="useInformationSchema" value="true" />
+    </jdbcConnection>
+
+    <!-- Java类型处理器 -->
+    <javaTypeResolver>
+      <property name="forceBigDecimals" value="false"/>
+    </javaTypeResolver>
+
+    <!-- 数据表生成对应实体 -->
+<!--    <javaModelGenerator targetPackage="cn.huaruan.ud24.query.temp" targetProject="src/main/java">-->
+    <javaModelGenerator targetPackage="cn.huaruan.ud24.query.entity" targetProject="src/main/java">
+      <property name="enableSubPackages" value="true"/>
+      <property name="trimStrings" value="true"/>
+    </javaModelGenerator>
+
+    <!-- 生成Mapper文件 -->
+    <sqlMapGenerator targetPackage="query.mapper" targetProject="src/main/resources">
+      <property name="enableSubPackages" value="true"/>
+    </sqlMapGenerator>
+
+    <!-- 生成Java的Mapper接口 -->
+    <javaClientGenerator type="XMLMAPPER" targetPackage="cn.huaruan.ud24.query.mapper" targetProject="src/main/java">
+      <property name="enableSubPackages" value="true"/>
+    </javaClientGenerator>
+
+    <!-- 配置需要生成的表，可用%表示通配表名进行批量生成 enable*Example可配置是否生成模板方法（默认生成） -->
+
+<!--    <table tableName="authority" />-->
+<!--    <table tableName="dictionary" />-->
+<!--    <table tableName="role" />-->
+<!--    <table tableName="role_authority"/>-->
+<!--    <table tableName="user" >-->
+<!--      <columnOverride column="status" javaType="java.lang.Boolean"/>-->
+<!--    </table>-->
+<!--    <table tableName="timely_courier" />-->
+<!--    <table tableName="user_role"/>-->
+<!--    <table tableName="organization"/>-->
+<!--    <table tableName="todays_waybill">-->
+<!--      <columnOverride column="pay_status" javaType="java.lang.Boolean"/>-->
+<!--      <columnOverride column="confirm" javaType="java.lang.Boolean"/>-->
+<!--    </table>-->
+<!--    <table tableName="timely_waybill">-->
+<!--      <columnOverride column="pay_status" javaType="java.lang.Boolean"/>-->
+<!--      <columnOverride column="confirm" javaType="java.lang.Boolean"/>-->
+<!--    </table>-->
+    <!--    <table tableName="todays_wb_log"/>-->
+<!--    <table tableName="timely_wb_log"/>-->
+<!--    <table tableName="address_book"/>-->
+<!--    <table tableName="message"/>-->
+    <table tableName="aaa"/>
+  </context>
+</generatorConfiguration>

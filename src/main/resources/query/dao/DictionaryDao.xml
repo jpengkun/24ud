@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.DictionaryDao">
+    <select id="countSames" resultType="java.lang.Long">
+        SELECT count(*)
+        FROM dictionary
+        WHERE 1=1
+        <if test="dictionaryId != null">
+            AND dictionary_id = #{dictionaryId}
+        </if>
+        <choose>
+            <when test="name == null">
+                AND name IS NULL
+            </when>
+            <otherwise>
+                AND name = #{name}
+            </otherwise>
+        </choose>
+        AND (name = #{name} OR VALUE = #{value})
+    </select>
+
+    <select id="countDictionary" resultType="java.lang.Long"
+            parameterType="cn.huaruan.ud24.vo.FindDictionaryParam">
+        SELECT count(*)
+        FROM (
+        SELECT DISTINCT
+        `dictionary`.`create_time`,
+        `dictionary`.`detail`,
+        `dictionary`.`dictionary_id`,
+        `dictionary`.`name`,
+        `dictionary`.`parent_id`,
+        `dictionary`.`root_id`,
+        `dictionary`.`value`
+        FROM
+        `dictionary` `dictionary`
+        LEFT JOIN `dictionary` `all` ON `dictionary`.`dictionary_id` = `all`.`root_id`
+        WHERE
+        `dictionary`.`dictionary_id` = `dictionary`.`root_id`
+        <if test="name != null and name !=''">
+            AND `all`.`name` LIKE #{name}
+        </if>
+        <if test="value != null and value !=''">
+            AND `all`.`value` LIKE #{value}
+        </if>
+        ) internal
+    </select>
+
+    <select id="findWithSubDictionary" resultType="cn.huaruan.ud24.query.entity.Dictionary"
+            parameterType="cn.huaruan.ud24.vo.FindDictionaryParam">
+        SELECT DISTINCT
+        `all`.`create_time`,
+        `all`.`detail`,
+        `all`.`dictionary_id`,
+        `all`.`name`,
+        `all`.`parent_id`,
+        `all`.`root_id`,
+        `all`.`value`
+        FROM (
+        SELECT DISTINCT
+        `dictionary`.`create_time`,
+        `dictionary`.`detail`,
+        `dictionary`.`dictionary_id`,
+        `dictionary`.`name`,
+        `dictionary`.`parent_id`,
+        `dictionary`.`root_id`,
+        `dictionary`.`value`
+        FROM
+        `dictionary` `dictionary`
+        LEFT JOIN `dictionary` `all` ON `dictionary`.`dictionary_id` = `all`.`root_id`
+        WHERE
+        `dictionary`.`dictionary_id` = `dictionary`.`root_id`
+        <if test="name != null and name !=''">
+            AND `all`.`name` LIKE #{name}
+        </if>
+        <if test="value != null and value !=''">
+            AND `all`.`value` LIKE #{value}
+        </if>
+        <if test="limit != null and limit !=''">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null and offset !=''">
+            OFFSET #{offset}
+        </if>
+        ) AS `dictionary`
+        LEFT JOIN `dictionary` `all`
+        ON `dictionary`.`dictionary_id` = `all`.`dictionary_id`
+        OR `dictionary`.`dictionary_id` = `all`.`root_id`
+    </select>
+
+    <select id="findRootSubDictionaries" resultType="cn.huaruan.ud24.vo.DictionaryNode">
+        SELECT DISTINCT
+        `all`.`root_id`,
+        `all`.`name`,
+        `all`.`dictionary_id`,
+        `all`.`value`,
+        `all`.`parent_id`
+        FROM
+        `dictionary` `dictionary`
+        LEFT JOIN `dictionary` `all` ON `dictionary`.`dictionary_id` = `all`.`root_id`
+        WHERE
+        `dictionary`.`value` IN
+        <foreach collection="array" item="rootValue" index="index" open="(" close=")" separator=",">
+            #{rootValue}
+        </foreach>
+    </select>
+</mapper>

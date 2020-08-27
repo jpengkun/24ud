@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.ComplaintDao">
+
+  <select id="countComplaint" resultType="java.lang.Long"
+          parameterType="cn.huaruan.ud24.vo.FindComplaintParam">
+    select count(*) from
+    `complaint` where 1=1
+    <if test="id != null and id !=''">
+      and `id` like "%"#{id}"%"
+    </if>
+    <if test="openId != null and openId !=''">
+      and `openId` like "%"#{openId}"%"
+    </if>
+    <if test="type != null and type !=''">
+      and `type` like "%"#{type}"%"
+    </if>
+    <if test="state != null">
+      and `state` = #{state}
+    </if>
+    <if test="category != null">
+      and `category` = #{category}
+    </if>
+    <if test="waybillId != null">
+      and `waybill_id` = #{waybillId}
+    </if>
+    <if test="createTimeStart != null ">
+      AND `create_time` &gt;= #{createTimeStart}
+    </if>
+    <if test="createTimeEnd != null ">
+      AND `create_time` &lt;= #{createTimeEnd}
+    </if>
+  </select>
+
+
+  <select id="findComplaint" resultType="cn.huaruan.ud24.query.entity.Complaint"
+          parameterType="cn.huaruan.ud24.vo.FindComplaintParam">
+    SELECT *
+    FROM `complaint`
+    WHERE 1 = 1
+    <if test="id != null and id !=''">
+      and `id` like "%"#{id}"%"
+    </if>
+    <if test="openId != null and openId !=''">
+      and `openId` like "%"#{openId}"%"
+    </if>
+    <if test="type != null and type !=''">
+      and `type` like "%"#{type}"%"
+    </if>
+    <if test="state != null">
+      and `state` = #{state}
+    </if>
+    <if test="category != null">
+      and `category` = #{category}
+    </if>
+    <if test="waybillId != null">
+      and `waybill_id` = #{waybillId}
+    </if>
+    <if test="createTimeStart != null ">
+      AND `create_time` &gt;= #{createTimeStart}
+    </if>
+    <if test="createTimeEnd != null ">
+      AND `create_time` &lt;= #{createTimeEnd}
+    </if>
+    <if test="limit != null and limit !=''">
+      LIMIT #{limit}
+    </if>
+    <if test="offset != null and offset !=''">
+      OFFSET #{offset}
+    </if>
+  </select>
+</mapper>

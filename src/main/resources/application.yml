@@ -19,7 +19,7 @@ spring:
 #    url: jdbc:mysql://192.168.1.153:3306/24ud?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true
     url: jdbc:mysql://39.98.153.56:3306/24ud?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true
     username: root
-    password: hrsoft2019!2#
+    password: hrSoft2019!2#
     # 使用druid数据源
     type: com.alibaba.druid.pool.DruidDataSource
 

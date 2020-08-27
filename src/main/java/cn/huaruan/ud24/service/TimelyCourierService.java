@@ -44,7 +44,10 @@ public class TimelyCourierService {
     public ResultMessage<String> addTimelyArrive(TimelyCourier timelyCourier) {
         AppAsserts.notNull(timelyCourier, "快递员信息不能为空");
         AppAsserts.notNull(timelyCourier.getPhone(), "快递员手机号不能为空");
+        AppAsserts.notNull(timelyCourier.getSmallShopName(),"快递员所负责的小超不能为空");
+        AppAsserts.notNull(timelyCourier.getCap(),"接单上限不能为空");
         TimelyCourierExample courierExample = new TimelyCourierExample();
+
         //TODO 根据手机号查询快递员
 
         //TODO 判断快递员是否已存在

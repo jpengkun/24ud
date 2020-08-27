@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
 import java.util.Date;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import lombok.Data;
 
 /**
@@ -88,4 +91,10 @@ public class TimelyCourier {
 
     @ApiModelProperty("钱包余额")
     private BigDecimal money;
+
+    @ApiModelProperty("所负责的小超市")
+    private String smallShopName;
+
+    @ApiModelProperty("接单上限设置")
+    private Integer cap;
 }

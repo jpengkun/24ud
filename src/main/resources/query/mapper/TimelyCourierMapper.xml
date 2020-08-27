@@ -215,6 +215,12 @@
       <if test="money != null">
         money,
       </if>
+      <if test="smallShopName != null">
+        small_shop_name,
+      </if>
+      <if test="cap != null">
+        cap,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -288,6 +294,12 @@
       </if>
       <if test="money != null">
         #{money,jdbcType=DECIMAL},
+      </if>
+      <if test="smallShopName != null">
+        #{smallShopName,jdbcType=VARCHAR},
+      </if>
+      <if test="cap != null">
+        #{cap,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>

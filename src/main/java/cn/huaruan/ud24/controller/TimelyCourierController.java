@@ -29,7 +29,6 @@ public class TimelyCourierController {
 
     private final TimelyCourierService courierService;
 
-    private final BCryptPasswordEncoder passwordEncoder;
 
     @GetMapping("/condition")
     @ApiOperation("条件查询分页接口")

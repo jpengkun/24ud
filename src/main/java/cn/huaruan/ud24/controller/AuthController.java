@@ -95,27 +95,25 @@ public class AuthController {
 
     /**
      * 找回密码
-     *
-     * @param map
+     * @param sendMsgParam
      * @return
      * @throws Exception
      */
     @PostMapping("/backPwd")
     @ApiOperation(value = "骑手帐号密码找回")
-    public ResultMessage backPwd(@RequestBody Map map) throws Exception {
-        //从map中把验证码,手机号,要修改的密码取出
-        String phone = (String) map.get("phone");
-        String msgNum = (String) map.get("msgNum");
-        String password = (String) map.get("password");
-        System.out.println(phone+"++++++++"+password+"++++++"+msgNum);
-        if (phone.length()>0&&phone!=null&&!"".equals(phone)){
-            TimelyCourier byPhone = courierService.findByPhone(phone);
+    public ResultMessage backPwd(@RequestBody SendMsgParam sendMsgParam) throws Exception {
+        if (sendMsgParam.getPhone().length()>0&&sendMsgParam.getPhone()!=null&&!"".equals(sendMsgParam.getPhone())){
+            TimelyCourier byPhone = courierService.findByPhone(sendMsgParam.getPhone());
             System.out.println("=========="+byPhone.toString());
             if (byPhone!=null) {
-                String encodedPassword = passwordEncoder.encode(password.trim());
-                SendMsgParam sendMsgParam = SmsUtils.sendCode(phone);
-                sendMsgParam.setMsgNum(msgNum);
-                SmsUtils.validate(sendMsgParam);
+                String encodedPassword = passwordEncoder.encode(sendMsgParam.getPassword().trim());
+                SendMsgParam sendMsgParam1 = new SendMsgParam();
+                sendMsgParam1.setMsgNum(sendMsgParam.getMsgNum());
+                sendMsgParam1.setPhone(sendMsgParam.getPhone());
+                sendMsgParam1.setHash(sendMsgParam.getHash());
+                sendMsgParam1.setTamp(sendMsgParam.getTamp());
+                sendMsgParam1.setPassword(sendMsgParam.getPassword());
+                SmsUtils.validate(sendMsgParam1);
                 byPhone.setPassword(encodedPassword);
                 courierService.updateCourier(byPhone);
                 return new ResultMessage(ResultStatus.SUCCESS);

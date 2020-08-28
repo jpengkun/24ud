@@ -105,7 +105,6 @@ public class SmsUtils {
         SimpleDateFormat sf = new SimpleDateFormat("yyyyMMddHHmmss");
         Calendar c = Calendar.getInstance();
         c.add(Calendar.MINUTE, 60);
-        System.out.println(randomNum);
         // 生成15分钟后时间，用户校验是否过期
         String currentTime = sf.format(c.getTime());
         // 注意测试时，也请带上公司简称或网站签名，发送正规内容短信。千万不要发送无意义的内容：例如 测一下、您好。否则可能会收不到

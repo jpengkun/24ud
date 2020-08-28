@@ -16,4 +16,6 @@ public interface TimelyCourierDao extends TimelyCourierMapper {
     List<TimelyCourier> findWithSubTimelyArrive(FindTimelyCourierParam arriveParam);
 
     long updateCourierStateByIds(UpdateCourierStateVo updateCourierStateVo);
+
+    TimelyCourier selectByPhone(String phone);
 }

@@ -2,12 +2,15 @@ package cn.huaruan.ud24.controller;
 
 import cn.huaruan.ud24.application.ResultMessage;
 import cn.huaruan.ud24.application.common.JwtUtils;
-import cn.huaruan.ud24.application.exception.AppRunException;
+import cn.huaruan.ud24.application.common.SmsUtils;
 import cn.huaruan.ud24.application.exception.BaseException;
 import cn.huaruan.ud24.constant.LoginUserType;
 import cn.huaruan.ud24.constant.ResultStatus;
+import cn.huaruan.ud24.query.entity.TimelyCourier;
 import cn.huaruan.ud24.security.LoginRequest;
 import cn.huaruan.ud24.security.SecurityUser;
+import cn.huaruan.ud24.service.TimelyCourierService;
+import cn.huaruan.ud24.vo.SendMsgParam;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -16,6 +19,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Map;
 
 /**
  * 权限认证控制器
@@ -39,6 +44,12 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
 
     private final JwtUtils jwtUtils;
+
+    private final BCryptPasswordEncoder passwordEncoder;
+
+
+    private final TimelyCourierService courierService;
+
 
     @ApiOperation("登录")
     @PostMapping("/login")
@@ -81,5 +92,41 @@ public class AuthController {
         }
         return new ResultMessage(ResultStatus.LOGOUT);
     }
+
+    /**
+     * 找回密码
+     *
+     * @param map
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/backPwd")
+    @ApiOperation(value = "骑手帐号密码找回")
+    public ResultMessage backPwd(@RequestBody Map map) throws Exception {
+        //从map中把验证码,手机号,要修改的密码取出
+        String phone = (String) map.get("phone");
+        String msgNum = (String) map.get("msgNum");
+        String password = (String) map.get("password");
+        System.out.println(phone+"++++++++"+password+"++++++"+msgNum);
+        if (phone.length()>0&&phone!=null&&!"".equals(phone)){
+            TimelyCourier byPhone = courierService.findByPhone(phone);
+            System.out.println("=========="+byPhone.toString());
+            if (byPhone!=null) {
+                String encodedPassword = passwordEncoder.encode(password.trim());
+                SendMsgParam sendMsgParam = SmsUtils.sendCode(phone);
+                sendMsgParam.setMsgNum(msgNum);
+                SmsUtils.validate(sendMsgParam);
+                byPhone.setPassword(encodedPassword);
+                courierService.updateCourier(byPhone);
+                return new ResultMessage(ResultStatus.SUCCESS);
+            }else {
+                return new ResultMessage(ResultStatus.FAILURE);
+            }
+        }else {
+            return new ResultMessage(ResultStatus.FAILURE);
+        }
+    }
+
+
 
 }

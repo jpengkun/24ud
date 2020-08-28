@@ -4,6 +4,7 @@ import cn.huaruan.ud24.application.ResultMessage;
 import cn.huaruan.ud24.application.common.IdCard;
 import cn.huaruan.ud24.application.common.SmsUtils;
 import cn.huaruan.ud24.application.query.Page;
+import cn.huaruan.ud24.constant.ResultStatus;
 import cn.huaruan.ud24.query.entity.TimelyCourier;
 import cn.huaruan.ud24.service.TimelyCourierService;
 import cn.huaruan.ud24.vo.FindTimelyCourierParam;
@@ -14,9 +15,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/timely/courier")
@@ -25,6 +28,8 @@ import java.util.List;
 public class TimelyCourierController {
 
     private final TimelyCourierService courierService;
+
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @GetMapping("/condition")
     @ApiOperation("条件查询分页接口")
@@ -78,8 +83,8 @@ public class TimelyCourierController {
     @ApiOperation("验证验证码接口")
     @PostMapping(value = "/validateNum")
     public ResultMessage validateNum(@NotNull @RequestBody SendMsgParam sendMsgParam) {
-       SmsUtils.validate(sendMsgParam);
-       return new ResultMessage();
+        SmsUtils.validate(sendMsgParam);
+        return new ResultMessage();
     }
 
 
@@ -100,5 +105,7 @@ public class TimelyCourierController {
     public ResultMessage updateCourierStateByIds(@RequestBody UpdateCourierStateVo updateCourierStateVo) {
         return new ResultMessage(courierService.updateCourierState(updateCourierStateVo));
     }
+
+
 
 }

@@ -34,4 +34,5 @@ public interface TimelyCourierMapper {
     int updateByPrimaryKeySelective(TimelyCourier record);
 
     int updateByPrimaryKey(TimelyCourier record);
+
 }

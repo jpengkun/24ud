@@ -37,6 +37,11 @@
             OFFSET #{offset}
         </if>
     </select>
+    <select id="selectByPhone" resultType="cn.huaruan.ud24.query.entity.TimelyCourier">
+         SELECT *
+        FROM `timely_courier`
+        WHERE phone=#{phone}
+    </select>
 
     <update id="updateCourierStateByIds"
             parameterType="cn.huaruan.ud24.vo.UpdateCourierStateVo">

@@ -214,4 +214,8 @@ public class TimelyCourierService {
         return timelyCourierDao.selectByPrimaryKey(courierId);
     }
 
+    public TimelyCourier findByPhone(String phone) {
+        AppAsserts.hasText(phone, "快递员手机号不能为空");
+        return timelyCourierDao.selectByPhone(phone);
+    }
 }

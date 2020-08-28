@@ -6,6 +6,7 @@ import cn.huaruan.ud24.application.common.SmsUtils;
 import cn.huaruan.ud24.application.query.Page;
 import cn.huaruan.ud24.constant.ResultStatus;
 import cn.huaruan.ud24.query.entity.TimelyCourier;
+import cn.huaruan.ud24.query.entity.TimelyWaybill;
 import cn.huaruan.ud24.service.TimelyCourierService;
 import cn.huaruan.ud24.vo.FindTimelyCourierParam;
 import cn.huaruan.ud24.vo.IdCardUpload;
@@ -105,6 +106,13 @@ public class TimelyCourierController {
         return new ResultMessage(courierService.updateCourierState(updateCourierStateVo));
     }
 
+
+    /*@GetMapping("/{id}")
+    @ApiOperation("根据id查找历史订单")
+    public ResultMessage<List<TimelyWaybill>> getOrderHistory(@PathVariable("id") String id) {
+        List<TimelyWaybill> list = courierService.getOrderHistory(id);
+        return new ResultMessage<List<TimelyWaybill>>(list);
+    }*/
 
 
 }

@@ -7,6 +7,7 @@ import cn.huaruan.ud24.application.common.TimeUtils;
 import cn.huaruan.ud24.application.common.UUIDUtil;
 import cn.huaruan.ud24.application.query.Page;
 import cn.huaruan.ud24.application.query.QueryUtils;
+import cn.huaruan.ud24.constant.ResultStatus;
 import cn.huaruan.ud24.query.dao.BillDao;
 import cn.huaruan.ud24.query.dao.TimelyCourierDao;
 import cn.huaruan.ud24.query.entity.*;
@@ -218,4 +219,10 @@ public class TimelyCourierService {
         AppAsserts.hasText(phone, "快递员手机号不能为空");
         return timelyCourierDao.selectByPhone(phone);
     }
+
+
+    /*public List<TimelyWaybill> getOrderHistory(String id) {
+        AppAsserts.hasText(id, "快递员id不能为空");
+        return null;
+    }*/
 }

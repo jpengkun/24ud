@@ -76,6 +76,7 @@ public class AuthController {
         if (principal.getLoginStatus() != null && !principal.getLoginStatus()){
             throw new DisabledException("帐号被禁用！");
         }
+        System.out.println("用户名+++++++==="+username+"密码是++++++++"+loginRequest.getPassword());
         String jwt = jwtUtils.createJWT(loginRequest.getRememberMe(), principal.getUserId(), username.toString());
         response.setHeader("Authorization", "Bearer " + jwt);
         return new ResultMessage<>(authentication.getPrincipal());

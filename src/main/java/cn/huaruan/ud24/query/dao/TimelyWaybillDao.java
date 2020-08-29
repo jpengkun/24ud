@@ -1,5 +1,6 @@
 package cn.huaruan.ud24.query.dao;
 
+import cn.huaruan.ud24.query.entity.TimelyWaybill;
 import cn.huaruan.ud24.query.mapper.TimelyWaybillMapper;
 import cn.huaruan.ud24.vo.*;
 import org.apache.ibatis.annotations.Param;
@@ -38,4 +39,8 @@ public interface TimelyWaybillDao extends TimelyWaybillMapper {
     long updateStateById(@Param("id") String id, @Param("state") Integer state, @Param("date") Date date);
 
     long payById(String id);
+
+    List<TimelyWaybill> getOrderHistoryRiderId(@Param("riderId")String riderId);
+
+    long countTimelyWaybills(@Param("riderId")String riderId);
 }

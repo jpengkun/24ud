@@ -76,7 +76,7 @@ public class UserController {
     }
 
     @ApiOperation("修改自己的帐号信息")
-    @PutMapping("/self")
+    @PostMapping("/self")
     public ResultMessage updateUser(@RequestBody User user) {
         userService.update(user);
         return new ResultMessage();

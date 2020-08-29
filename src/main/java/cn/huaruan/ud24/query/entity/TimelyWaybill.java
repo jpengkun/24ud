@@ -80,4 +80,11 @@ public class TimelyWaybill {
 
     @ApiModelProperty("状态")
     private Integer state;
+
+    @ApiModelProperty("小超id")
+    private String smallShopId;
+
+    @ApiModelProperty("骑手id")
+    private String riderId;
+
 }

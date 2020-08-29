@@ -97,4 +97,7 @@ public class TimelyCourier {
 
     @ApiModelProperty("接单上限设置")
     private Integer cap;
+
+    @ApiModelProperty("用户输入新密码")
+    private String newPassword;
 }

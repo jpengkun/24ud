@@ -45,9 +45,6 @@ public class AuthController {
 
     private final JwtUtils jwtUtils;
 
-    private final BCryptPasswordEncoder passwordEncoder;
-
-
     private final TimelyCourierService courierService;
 
 
@@ -105,10 +102,7 @@ public class AuthController {
     public ResultMessage backPwd(@RequestBody SendMsgParam sendMsgParam) throws Exception {
         if (sendMsgParam.getPhone().length()>0&&sendMsgParam.getPhone()!=null&&!"".equals(sendMsgParam.getPhone())){
             TimelyCourier byPhone = courierService.findByPhone(sendMsgParam.getPhone());
-            System.out.println("=========="+byPhone.toString());
             if (byPhone!=null) {
-                String encodedPassword = passwordEncoder.encode(sendMsgParam.getPassword().trim());
-                System.out.println("==============================="+encodedPassword);
                 SendMsgParam sendMsgParam1 = new SendMsgParam();
                 sendMsgParam1.setMsgNum(sendMsgParam.getMsgNum());
                 sendMsgParam1.setPhone(sendMsgParam.getPhone());
@@ -116,7 +110,7 @@ public class AuthController {
                 sendMsgParam1.setTamp(sendMsgParam.getTamp());
                 sendMsgParam1.setPassword(sendMsgParam.getPassword());
                 SmsUtils.validate(sendMsgParam1);
-                byPhone.setPassword(encodedPassword);
+                byPhone.setPassword(sendMsgParam.getPassword());
                 courierService.updateCourier(byPhone);
                 return new ResultMessage(ResultStatus.SUCCESS);
             }else {

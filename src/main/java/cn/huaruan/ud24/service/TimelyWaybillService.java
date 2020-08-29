@@ -13,9 +13,11 @@ import cn.huaruan.ud24.constant.TodaysWaybillState;
 import cn.huaruan.ud24.query.dao.*;
 import cn.huaruan.ud24.query.entity.QuestionWaybill;
 import cn.huaruan.ud24.query.entity.TimelyCourier;
+import cn.huaruan.ud24.query.entity.TimelyWaybill;
 import cn.huaruan.ud24.query.entity.TimelyWbLog;
 import cn.huaruan.ud24.vo.*;
 import lombok.AllArgsConstructor;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -253,4 +255,9 @@ public class TimelyWaybillService {
         }
     }
 
+    public Page<TimelyWaybill> getOrderHistory(String riderId) {
+        long total = waybillDao.countTimelyWaybills(riderId);
+        List<TimelyWaybill> timelyWaybills = waybillDao.getOrderHistoryRiderId(riderId);
+        return new Page<>(total,timelyWaybills);
+    }
 }

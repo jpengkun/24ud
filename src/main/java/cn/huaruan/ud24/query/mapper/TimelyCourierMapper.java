@@ -3,6 +3,8 @@ package cn.huaruan.ud24.query.mapper;
 import cn.huaruan.ud24.query.entity.TimelyCourier;
 import cn.huaruan.ud24.query.entity.TimelyCourierExample;
 import java.util.List;
+
+import cn.huaruan.ud24.query.entity.TimelyWaybill;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

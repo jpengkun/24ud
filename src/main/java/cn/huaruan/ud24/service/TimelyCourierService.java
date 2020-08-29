@@ -10,6 +10,7 @@ import cn.huaruan.ud24.application.query.QueryUtils;
 import cn.huaruan.ud24.constant.ResultStatus;
 import cn.huaruan.ud24.query.dao.BillDao;
 import cn.huaruan.ud24.query.dao.TimelyCourierDao;
+import cn.huaruan.ud24.query.dao.TimelyWaybillDao;
 import cn.huaruan.ud24.query.entity.*;
 import cn.huaruan.ud24.vo.*;
 import cn.hutool.core.date.DateTime;
@@ -221,8 +222,4 @@ public class TimelyCourierService {
     }
 
 
-    /*public List<TimelyWaybill> getOrderHistory(String id) {
-        AppAsserts.hasText(id, "快递员id不能为空");
-        return null;
-    }*/
 }

@@ -187,6 +187,34 @@
         </collection>
     </resultMap>
 
+    <resultMap id="TimelyWaybillType" type="cn.huaruan.ud24.query.entity.TimelyWaybill">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="tm_no" jdbcType="VARCHAR" property="tmNo"/>
+        <result column="org_id" jdbcType="VARCHAR" property="orgId"/>
+        <result column="sender" jdbcType="VARCHAR" property="sender"/>
+        <result column="sender_phone" jdbcType="VARCHAR" property="senderPhone"/>
+        <result column="sender_address" jdbcType="VARCHAR" property="senderAddress"/>
+        <result column="sender_location" jdbcType="OTHER" property="senderLocation"/>
+        <result column="receiver" jdbcType="VARCHAR" property="receiver"/>
+        <result column="receiver_phone" jdbcType="VARCHAR" property="receiverPhone"/>
+        <result column="receiver_address" jdbcType="VARCHAR" property="receiverAddress"/>
+        <result column="receiver_location" jdbcType="OTHER" property="receiverLocation"/>
+        <result column="goods_weight" jdbcType="DECIMAL" property="goodsWeight"/>
+        <result column="goods_info" jdbcType="VARCHAR" property="goodsInfo"/>
+        <result column="remarks" jdbcType="VARCHAR" property="remarks"/>
+        <result column="open_id" jdbcType="VARCHAR" property="openId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="org_name" jdbcType="VARCHAR" property="orgName"/>
+        <result column="pay_type" jdbcType="INTEGER" property="payType"/>
+        <result column="pay_status" jdbcType="TINYINT" property="payStatus"/>
+        <result column="amount" jdbcType="DECIMAL" property="amount"/>
+        <result column="confirm" jdbcType="TINYINT" property="confirm"/>
+        <result column="state" jdbcType="INTEGER" property="state"/>
+        <result column="small_shop_id" jdbcType="VARCHAR" property="smallShopId"/>
+        <result column="rider_id" jdbcType="VARCHAR" property="riderId"/>
+    </resultMap>
+
     <sql id="findWaybillParam">
         <if test="wbNo != null">
             AND `tm_no` "%"#{wbNo}"%"
@@ -407,6 +435,20 @@
         WHEN `twl`.`state` = 0 THEN 0
         ELSE 1
         END)
+    </select>
+    <select id="getOrderHistoryRiderId" resultMap="TimelyWaybillType" parameterType="String">
+        SELECT *
+        FROM `timely_waybill`
+        where rider_id = #{riderId}
+        ORDER BY month(create_time) DESC
+    </select>
+    <select id="countTimelyWaybills" resultType="long" parameterType="String">
+        SELECT count(*)
+        FROM `timely_waybill`
+        WHERE 1=1
+        <if test="riderId != null and riderId.length()>0">
+            AND `timely_waybill`.rider_id=#{riderId}
+        </if>
     </select>
 
 </mapper>

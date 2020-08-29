@@ -8,6 +8,7 @@ import cn.huaruan.ud24.constant.ResultStatus;
 import cn.huaruan.ud24.query.entity.TimelyCourier;
 import cn.huaruan.ud24.query.entity.TimelyWaybill;
 import cn.huaruan.ud24.service.TimelyCourierService;
+import cn.huaruan.ud24.service.TimelyWaybillService;
 import cn.huaruan.ud24.vo.FindTimelyCourierParam;
 import cn.huaruan.ud24.vo.IdCardUpload;
 import cn.huaruan.ud24.vo.SendMsgParam;
@@ -31,6 +32,9 @@ public class TimelyCourierController {
     private final TimelyCourierService courierService;
 
 
+    private final TimelyWaybillService timelyWaybillService;
+
+
     @GetMapping("/condition")
     @ApiOperation("条件查询分页接口")
     public ResultMessage<Page<TimelyCourier>> findCourierWithSubCourier(FindTimelyCourierParam findCourierParam) {
@@ -43,10 +47,12 @@ public class TimelyCourierController {
         return new ResultMessage<>(courierService.getCourierByKey(id));
     }
 
-    @PutMapping
+    @PostMapping("/findOneTimelyCourier")
     @ApiOperation("快递员修改接口")
     public ResultMessage findOne(@RequestBody TimelyCourier courier) {
-        return new ResultMessage<>(courierService.updateCourier(courier));
+        TimelyCourier byPhone = courierService.findByPhone(courier.getPhone());
+        byPhone.setPassword(courier.getNewPassword());
+        return new ResultMessage<>(courierService.updateCourier(byPhone));
     }
 
     @PostMapping("/forget")
@@ -107,12 +113,13 @@ public class TimelyCourierController {
     }
 
 
-    /*@GetMapping("/{id}")
+    @PostMapping("/getOrderHistory")
     @ApiOperation("根据id查找历史订单")
-    public ResultMessage<List<TimelyWaybill>> getOrderHistory(@PathVariable("id") String id) {
-        List<TimelyWaybill> list = courierService.getOrderHistory(id);
-        return new ResultMessage<List<TimelyWaybill>>(list);
-    }*/
+    public ResultMessage<Page<TimelyWaybill>> getOrderHistory(@RequestBody TimelyWaybill timelyWaybill) {
+        return new ResultMessage<>(timelyWaybillService.getOrderHistory(timelyWaybill.getRiderId()));
+    }
+
+
 
 
 }

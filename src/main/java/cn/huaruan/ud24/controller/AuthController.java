@@ -108,6 +108,7 @@ public class AuthController {
             System.out.println("=========="+byPhone.toString());
             if (byPhone!=null) {
                 String encodedPassword = passwordEncoder.encode(sendMsgParam.getPassword().trim());
+                System.out.println("==============================="+encodedPassword);
                 SendMsgParam sendMsgParam1 = new SendMsgParam();
                 sendMsgParam1.setMsgNum(sendMsgParam.getMsgNum());
                 sendMsgParam1.setPhone(sendMsgParam.getPhone());

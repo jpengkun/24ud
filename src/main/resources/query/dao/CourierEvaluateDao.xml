@@ -25,4 +25,10 @@
             AND `courier_evaluate`.timely_id LIKE #{timelyId}
         </if>
     </select>
+
+    <select id="findAvgEvaluateByCourierId" resultType="java.lang.Double">
+        select AVG(score)
+        from `courier_evaluate`
+        where courier_id = #{userId}
+    </select>
 </mapper>

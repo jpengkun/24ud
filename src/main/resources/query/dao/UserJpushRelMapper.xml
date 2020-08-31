@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.huaruan.ud24.query.dao.UserJpushRelMapper">
+
+  <sql id="Base_Column_List">
+    woho_user_jpush_rel.id, woho_user_jpush_rel.user_id, registration_id, woho_user_jpush_rel.create_user_id, woho_user_jpush_rel.create_user_name, woho_user_jpush_rel.create_time, woho_user_jpush_rel.update_user_id,
+    woho_user_jpush_rel.update_user_name, woho_user_jpush_rel.last_update_time, woho_user_jpush_rel.delete_flag, woho_user_jpush_rel.version
+  </sql>
+
+  <insert id="insert" parameterType="cn.huaruan.ud24.query.entity.UserJpushRel">
+    insert into woho_user_jpush_rel (id, user_id, registration_id,version,delete_flag)
+    values (#{id,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{registrationId,jdbcType=VARCHAR},#{version,jdbcType=INTEGER},0)
+  </insert>
+
+  <resultMap id="BaseResultMap" type="cn.huaruan.ud24.query.entity.UserJpushRel">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="registration_id" jdbcType="VARCHAR" property="registrationId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+    <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" />
+    <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag" />
+    <result column="version" jdbcType="INTEGER" property="version" />
+  </resultMap>
+
+  <select id="findByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from woho_user_jpush_rel
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+
+  <update id="uptateJpushIdByUserId">
+    update woho_user_jpush_rel
+    set registration_id = #{registrationId,jdbcType=VARCHAR},
+        update_user_id = #{updateUserId,jdbcType=VARCHAR},
+        update_user_name = #{updateUserName,jdbcType=VARCHAR},
+        last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP}
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+
+  <select id="selectRegistrationIdByUserId" resultType="cn.huaruan.ud24.query.entity.UserJpushRel" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from woho_user_jpush_rel
+    ,timely_courier where timely_courier.id = woho_user_jpush_rel.user_id and timely_courier.id = #{userId}
+
+  </select>
+</mapper>

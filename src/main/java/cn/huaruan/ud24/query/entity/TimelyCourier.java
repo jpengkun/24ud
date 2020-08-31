@@ -64,7 +64,6 @@ public class TimelyCourier {
     @ApiModelProperty("性别 女:0  男:1")
     private Integer sex;
 
-    @JsonIgnore
     @ApiModelProperty("即时达快递员登陆密码")
     private String password;
 
@@ -95,8 +94,15 @@ public class TimelyCourier {
     @ApiModelProperty("所负责的小超市")
     private String smallShopName;
 
+    @ApiModelProperty("所负责的小超市id")
+    private String smallShopId;
+
     @ApiModelProperty("接单上限设置")
     private Integer cap;
+
+    @ApiModelProperty("是否开启接单")
+    private Integer isOpen;
+
 
     @ApiModelProperty("用户输入新密码")
     private String newPassword;

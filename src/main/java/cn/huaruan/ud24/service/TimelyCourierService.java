@@ -9,18 +9,25 @@ import cn.huaruan.ud24.application.query.Page;
 import cn.huaruan.ud24.application.query.QueryUtils;
 import cn.huaruan.ud24.constant.ResultStatus;
 import cn.huaruan.ud24.query.dao.BillDao;
+import cn.huaruan.ud24.query.dao.CourierEvaluateDao;
 import cn.huaruan.ud24.query.dao.TimelyCourierDao;
+import cn.huaruan.ud24.query.dao.TimelyWbLogDao;
 import cn.huaruan.ud24.query.dao.TimelyWaybillDao;
 import cn.huaruan.ud24.query.entity.*;
+import cn.huaruan.ud24.query.mapper.TimelyWaybillMapper;
 import cn.huaruan.ud24.vo.*;
 import cn.hutool.core.date.DateTime;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +44,17 @@ public class TimelyCourierService {
 
     private final BillDao billDao;
 
+    @Autowired
+    private TimelyWaybillMapper timelyWaybillMapper;
+
+    @Autowired
+    private CourierEvaluateDao courierEvaluateDao;
+
+    @Autowired
+    private TimelyWbLogDao timelyWbLogDao;
+
+
+
     /**
      * 添加即时达快递员
      *
@@ -46,8 +64,10 @@ public class TimelyCourierService {
     public ResultMessage<String> addTimelyArrive(TimelyCourier timelyCourier) {
         AppAsserts.notNull(timelyCourier, "快递员信息不能为空");
         AppAsserts.notNull(timelyCourier.getPhone(), "快递员手机号不能为空");
-        AppAsserts.notNull(timelyCourier.getSmallShopName(),"快递员所负责的小超不能为空");
-        AppAsserts.notNull(timelyCourier.getCap(),"接单上限不能为空");
+        AppAsserts.notNull(timelyCourier.getSmallShopName(), "快递员所负责的小超不能为空");
+        AppAsserts.notNull(timelyCourier.getSmallShopId(), "快递员所负责的小超id不能为空");
+        AppAsserts.notNull(timelyCourier.getCap(), "接单上限不能为空");
+        AppAsserts.notNull(timelyCourier.getPassword(), "密码不能为空");
         TimelyCourierExample courierExample = new TimelyCourierExample();
 
         //TODO 根据手机号查询快递员
@@ -62,7 +82,7 @@ public class TimelyCourierService {
         courierExample.createCriteria().andPhoneEqualTo(timelyCourier.getPhone());
         List<TimelyCourier> courier = timelyCourierDao.selectByExample(courierExample);
         TimelyCourier firstOne = QueryUtils.getFirstOne(courier);
-        if (firstOne!=null){
+        if (firstOne != null) {
             AppAsserts.no(2 == firstOne.getState(), "快递员已认证，请直接登陆！");
             if (1 == firstOne.getState()) {
                 return new ResultMessage<>(firstOne.getId()).message("快递员已注册但未认证");
@@ -70,13 +90,8 @@ public class TimelyCourierService {
         }
         timelyCourier.setState(1);
         timelyCourier.setCreateTime(new Date());
-        if (StringUtils.hasText(timelyCourier.getPassword())) {
-            String encodedPassword = passwordEncoder.encode(timelyCourier.getPassword().trim());
-            timelyCourier.setPassword(encodedPassword);
-        } else {
-            String encodedPassword = passwordEncoder.encode("123456".trim());
-            timelyCourier.setPassword(encodedPassword);
-        }
+        String encodedPassword = passwordEncoder.encode(timelyCourier.getPassword().trim());
+        timelyCourier.setPassword(encodedPassword);
         timelyCourier.setId(UUIDUtil.get());
         timelyCourier.setDeposit(new BigDecimal(0));
         timelyCourier.setMoney(new BigDecimal(0));
@@ -181,9 +196,9 @@ public class TimelyCourierService {
         TiCourierWithScore courier = new TiCourierWithScore();
         AppAsserts.notNull(timelyCourier, "快递员不存在");
         QueryUtils.copyProperties(timelyCourier, courier);
-        courier.setScore(evaluateService.getAvgScore(id));
+        //courier.setScore(evaluateService.getAvgScore(id));
         //计算出当天收益
-        courier.setIncome(billDao.countIncome(id, TimeUtils.getStartToday(), TimeUtils.setEndDay(new DateTime())));
+        //courier.setIncome(billDao.countIncome(id, TimeUtils.getStartToday(), TimeUtils.setEndDay(new DateTime())));
         return courier;
     }
 
@@ -216,10 +231,79 @@ public class TimelyCourierService {
         return timelyCourierDao.selectByPrimaryKey(courierId);
     }
 
+    public void isOpen(String userId) {
+        TimelyCourier timelyCourier = timelyCourierDao.selectByPrimaryKey(userId);
+        if (timelyCourier.getIsOpen() == 0) {
+            timelyCourier.setIsOpen(1);
+            timelyCourierDao.updateByPrimaryKey(timelyCourier);
+        } else {
+            timelyCourier.setIsOpen(0);
+            timelyCourierDao.updateByPrimaryKey(timelyCourier);
+        }
+    }
+
+    public IncomeInfo income(String userId) {
+        //查询该骑手今日收入、评分、总订单
+        IncomeInfo incomeInfo = timelyWaybillMapper.queryByRiderId(userId);
+        if (null == incomeInfo.getIncome()){
+            incomeInfo.setIncome(BigDecimal.valueOf(0.0));
+        }
+        Double evaluate = courierEvaluateDao.findAvgEvaluateByCourierId(userId);
+        incomeInfo.setGrade(evaluate);
+        //是否开启
+        TimelyCourier timelyCourier = timelyCourierDao.selectByPrimaryKey(userId);
+        incomeInfo.setIsOpen(timelyCourier.getIsOpen());
+        return incomeInfo;
+    }
+
+    public List<TimelyWbInfo> getNo(GetTimelyNo getTimelyNo) {
+        PageHelper.startPage(getTimelyNo.getPageNo(), getTimelyNo.getPageSize());
+        ArrayList<TimelyWbInfo> timelyWbInfos = new ArrayList<>();
+        //运单编号集合
+        List<String> strings = timelyCourierDao.queryByCourierId(getTimelyNo.getUserId(), getTimelyNo.getType());
+        for (String string : strings) {
+            TimelyWaybill timelyWaybill = timelyWaybillMapper.queryByTmNo(string);
+            TimelyWbInfo info = new TimelyWbInfo();
+            info.setReceiver(timelyWaybill.getReceiver());
+            info.setReceiverAddress(timelyWaybill.getReceiverAddress());
+            info.setReceiverPhone(timelyWaybill.getReceiverPhone());
+            info.setSender(timelyWaybill.getSender());
+            info.setSenderAddress(timelyWaybill.getSenderAddress());
+            info.setSenderPhone(timelyWaybill.getSenderPhone());
+            info.setAmount(timelyWaybill.getAmount());
+            info.setCreateTime(timelyWaybill.getCreateTime());
+            info.setWbId(timelyWaybill.getId());
+            timelyWbInfos.add(info);
+        }
+        PageInfo<TimelyWbInfo> infoPageInfo = new PageInfo<>(timelyWbInfos);
+        return infoPageInfo.getList();
+    }
+
     public TimelyCourier findByPhone(String phone) {
         AppAsserts.hasText(phone, "快递员手机号不能为空");
         return timelyCourierDao.selectByPhone(phone);
     }
 
+    /**
+     * 查询小超归属哪些骑手负责
+     * @param shopName
+     */
+    public List<String> queryRidersByShopName(String shopName) {
+        List<String> couriers = timelyCourierDao.queryRidersByShopName(shopName);
+        return couriers;
+    }
 
+    /**
+     * 符合接单条件的骑手
+     */
+    public TimelyCourier queryConformRiders(String shopName) {
+        //开启接单且空闲中的骑手
+        List<TimelyCourier> timelyCouriers = timelyCourierDao.queryConformRiders(shopName);
+        //每个骑手的平均评分
+        timelyCouriers.stream().sorted().forEach(tc ->{
+            Double avgEvaluateByCourierId = courierEvaluateDao.findAvgEvaluateByCourierId(tc.getId());
+        });
+        TimelyCourier timelyCourier = timelyCouriers.get(0);
+        return timelyCourier;
+    }
 }

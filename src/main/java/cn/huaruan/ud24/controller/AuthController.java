@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * 权限认证控制器
@@ -70,11 +71,13 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         SecurityUser principal = (SecurityUser) authentication.getPrincipal();
+
         if (principal.getLoginStatus() != null && !principal.getLoginStatus()){
             throw new DisabledException("帐号被禁用！");
         }
         System.out.println("用户名+++++++==="+username+"密码是++++++++"+loginRequest.getPassword());
         String jwt = jwtUtils.createJWT(loginRequest.getRememberMe(), principal.getUserId(), username.toString());
+        principal.setAuthorization("Bearer " + jwt);
         response.setHeader("Authorization", "Bearer " + jwt);
         return new ResultMessage<>(authentication.getPrincipal());
     }
@@ -110,6 +113,9 @@ public class AuthController {
                 sendMsgParam1.setTamp(sendMsgParam.getTamp());
                 sendMsgParam1.setPassword(sendMsgParam.getPassword());
                 SmsUtils.validate(sendMsgParam1);
+
+                byPhone.setPassword(sendMsgParam.getPassword());
+                System.out.println("=================888#W###:"+byPhone.getPassword());
                 byPhone.setPassword(sendMsgParam.getPassword());
                 courierService.updateCourier(byPhone);
                 return new ResultMessage(ResultStatus.SUCCESS);

@@ -2,9 +2,8 @@ package cn.huaruan.ud24.service;
 
 import cn.huaruan.ud24.application.AppAsserts;
 import cn.huaruan.ud24.application.common.UUIDUtil;
-import cn.huaruan.ud24.application.exception.AppRunException;
+import cn.huaruan.ud24.application.query.Page;
 import cn.huaruan.ud24.constant.LoginUserType;
-import cn.huaruan.ud24.constant.ResultStatus;
 import cn.huaruan.ud24.query.dao.*;
 import cn.huaruan.ud24.query.entity.*;
 import cn.huaruan.ud24.security.SecurityUser;
@@ -13,15 +12,12 @@ import cn.huaruan.ud24.vo.FindRoleParam;
 import cn.huaruan.ud24.vo.OrgWithRegion;
 import cn.huaruan.ud24.vo.RoleWithAuthority;
 import cn.huaruan.ud24.application.common.TreeUtils;
-import cn.huaruan.ud24.application.query.Page;
 import cn.huaruan.ud24.application.query.QueryUtils;
 import lombok.AllArgsConstructor;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -294,7 +290,7 @@ public class SecurityService {
      * @param findRoleParam 查询参数
      * @return 带有权限的角色列表
      */
-    public Page<RoleWithAuthority> findRoleWithAuthority(FindRoleParam findRoleParam) {
+    public cn.huaruan.ud24.application.query.Page<RoleWithAuthority> findRoleWithAuthority(FindRoleParam findRoleParam) {
         return new Page<>(roleDao.countRole(findRoleParam),
                 roleDao.findRoleWithAuthority(findRoleParam));
     }

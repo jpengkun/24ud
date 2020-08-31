@@ -19,6 +19,9 @@
               #{openId,jdbcType=VARCHAR},#{payType,jdbcType=INTEGER},#{payStatus,jdbcType=TINYINT},
               #{amount,jdbcType=DECIMAL},#{confirm,jdbcType=TINYINT},#{state,jdbcType=INTEGER})
     </insert>
+    <update id="signFor">
+        update `timely_wb_log` set `state` = 6,`detail` = '已签收!' where `courier_id` = #{userId} and `wb_id` = #{wbId}
+    </update>
 
     <update id="updateStateById">
          UPDATE `timely_waybill` SET `state` = #{state} ,`update_time` = #{date} WHERE id = #{id}
@@ -97,6 +100,8 @@
         </set>
         where `id` = #{id,jdbcType=VARCHAR}
     </update>
+
+
 
     <sql id="wbColumn">
         `tw`.`id`,
@@ -258,7 +263,7 @@
         </if>
     </sql>
 
-    <sql id="pageParam">
+    <sql id="getTimelyNo">
         <if test="limit != null and limit !=''">
             LIMIT #{limit}
         </if>
@@ -285,7 +290,7 @@
         FROM `timely_waybill` `tw`
         WHERE 1 = 1
         <include refid="findWaybillParam"/>
-        <include refid="pageParam"/>
+        <include refid="getTimelyNo"/>
         ) AS `tw`
         <include refid="joinList"/>
         <include refid="orderList"/>
@@ -339,7 +344,7 @@
         AND `id` IN (SELECT wb_id
                     FROM `timely_wb_log`
                     WHERE courier_id = #{courierId})
-        <include refid="pageParam"/>
+        <include refid="getTimelyNo"/>
         ) AS `tw`
         <include refid="joinList"/>
         <include refid="orderList"/>
@@ -353,7 +358,7 @@
         FROM `timely_waybill`
         WHERE `id`
         IN (SELECT `wb_id` FROM `timely_wb_log` WHERE `courier_id` = #{courierId})
-        <include refid="pageParam"/>
+        <include refid="getTimelyNo"/>
         ) AS `tw`
         <include refid="joinList"/>
         <include refid="orderList"/>
@@ -424,7 +429,7 @@
         <if test="state != null ">
             AND `state` = #{state}
         </if>
-        <include refid="pageParam"/>
+        <include refid="getTimelyNo"/>
         ) AS `tw`
         <include refid="joinList"/>
         ORDER BY

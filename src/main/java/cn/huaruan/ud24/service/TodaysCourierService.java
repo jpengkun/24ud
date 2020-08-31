@@ -11,7 +11,6 @@ import cn.huaruan.ud24.query.dao.TodaysCourierDao;
 import cn.huaruan.ud24.query.entity.TodaysCourier;
 import cn.huaruan.ud24.query.entity.TodaysCourierExample;
 import cn.huaruan.ud24.vo.FindCourierParam;
-import cn.huaruan.ud24.vo.TiCourierWithScore;
 import cn.huaruan.ud24.vo.ToCourierWithScore;
 import cn.huaruan.ud24.vo.TodaysCourierWithOrganization;
 import cn.hutool.core.date.DateTime;

@@ -47,7 +47,6 @@ spring:
         max-idle: 8
         # 连接池中的最小空闲连接 默认 0
         min-idle: 0
-    password: 123456
 
 # MyBatis 配置
 mybatis:
@@ -83,7 +82,7 @@ custom:
         - "/login"
         - "/logout"
         - "/todays/courier/forget"
-        - "/timely/courier"
+        - "/timely/courier/sendMsg"
         - "/timely/courier/idCardUpload"
         - "/timely/courier/forget"
         - "/timely/courier/sendMsg"
@@ -93,7 +92,6 @@ custom:
         - "/timely/waybill/**"
       # 需要过滤的请求，不限方法
       pattern:
-        - "/**"
         - "/websocket/**"
         - "/wx/**"
         # ===== swagger =====
@@ -102,4 +100,10 @@ custom:
         - "/images/**"
         - "/webjars/**"
         - "/v2/api-docs"
+        - "/backPwd/**"
         # ===================
+jpush:
+  appKey: 00a89962a93799cd5d63e16c
+  masterSecret: 456f3b4a99de25e647b6f494
+  liveTime: 1000
+  apnsProduction: false # 是否生成环境，true表示生成环境

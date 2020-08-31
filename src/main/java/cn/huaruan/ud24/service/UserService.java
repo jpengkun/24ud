@@ -3,8 +3,8 @@ package cn.huaruan.ud24.service;
 import cn.huaruan.ud24.application.AppAsserts;
 import cn.huaruan.ud24.application.common.EntityUtils;
 import cn.huaruan.ud24.application.common.UUIDUtil;
-import cn.huaruan.ud24.query.dao.*;
 import cn.huaruan.ud24.application.query.Page;
+import cn.huaruan.ud24.query.dao.*;
 import cn.huaruan.ud24.application.query.QueryUtils;
 import cn.huaruan.ud24.query.entity.*;
 import cn.huaruan.ud24.vo.FindUserParam;
@@ -109,7 +109,8 @@ public class UserService {
     @Cacheable(cacheNames = "UserCache", key = "#userId", unless = "#result==null")
     public User getUserById(String userId) {
         AppAsserts.notNull(userId, "用户id不能为空！");
-        return userDao.selectByPrimaryKey(userId);
+        User user = userDao.selectByPrimaryKey(userId);
+        return user;
     }
 
     /**
@@ -146,7 +147,7 @@ public class UserService {
      * @param findUserParam 查询条件
      * @return 一页带有角色的用户
      */
-    public Page<UserWithRole> findUserWithRole(FindUserParam findUserParam) {
+    public cn.huaruan.ud24.application.query.Page<UserWithRole> findUserWithRole(FindUserParam findUserParam) {
         findUserParam.setUsername(QueryUtils.likeContains(findUserParam.getUsername()));
         findUserParam.setNickname(QueryUtils.likeContains(findUserParam.getNickname()));
         return new Page<>(userDao.countUser(findUserParam),

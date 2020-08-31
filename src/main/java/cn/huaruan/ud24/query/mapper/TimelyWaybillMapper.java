@@ -2,7 +2,12 @@ package cn.huaruan.ud24.query.mapper;
 
 import cn.huaruan.ud24.query.entity.TimelyWaybill;
 import cn.huaruan.ud24.query.entity.TimelyWaybillExample;
+
+import java.math.BigDecimal;
 import java.util.List;
+
+import cn.huaruan.ud24.query.entity.TimelyWbInfo;
+import cn.huaruan.ud24.vo.IncomeInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -34,4 +39,8 @@ public interface TimelyWaybillMapper {
     int updateByPrimaryKeySelective(TimelyWaybill record);
 
     int updateByPrimaryKey(TimelyWaybill record);
+
+    IncomeInfo queryByRiderId(String userId);
+
+    TimelyWaybill queryByTmNo(String string);
 }

@@ -7,7 +7,6 @@ import cn.huaruan.ud24.service.CourierEvaluateService;
 
 import cn.huaruan.ud24.vo.FindEvaluateAboutCourierParam;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;

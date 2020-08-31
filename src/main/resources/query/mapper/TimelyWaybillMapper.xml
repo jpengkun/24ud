@@ -274,6 +274,20 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
+
+  <select id="queryByRiderId" resultType="cn.huaruan.ud24.vo.IncomeInfo">
+    select SUM(amount) income,count(*) todayOrder
+    from timely_waybill
+    where rider_id = #{userId}
+	and to_days(create_time) = to_days(now());
+  </select>
+
+  <select id="queryByTmNo" resultType="cn.huaruan.ud24.query.entity.TimelyWaybill">
+      select *
+      from timely_waybill
+      where id = #{string}
+  </select>
+
   <update id="updateByExampleSelective" parameterType="map">
     update timely_waybill
     <set>

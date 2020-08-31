@@ -33,6 +33,8 @@ public class SecurityUser implements UserDetails {
 
     private Integer status;
 
+    private String Authorization;
+
     @JsonIgnore
     private Boolean loginStatus;
     /**
@@ -175,5 +177,13 @@ public class SecurityUser implements UserDetails {
 
     public void setLoginStatus(Boolean loginStatus) {
         this.loginStatus = loginStatus;
+    }
+
+    public String getAuthorization() {
+        return Authorization;
+    }
+
+    public void setAuthorization(String authorization) {
+        Authorization = authorization;
     }
 }

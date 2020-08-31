@@ -41,7 +41,7 @@ public class UserController {
     @ApiOperation("分页查找用户")
     @GetMapping
     @PreAuthorize("hasAuthority('" + AuthorityCodes.USER_MANAGE + "')")
-    public ResultMessage<Page<UserWithRole>> findUserWithRole( FindUserParam findUserParam) {
+    public ResultMessage<Page<UserWithRole>> findUserWithRole(FindUserParam findUserParam) {
         return new ResultMessage<>(userService.findUserWithRole(findUserParam));
     }
 
@@ -69,7 +69,6 @@ public class UserController {
 
     @ApiOperation("根据ID删除用户")
     @DeleteMapping("/{userId}")
-//    @PreAuthorize("hasAuthority('" + AuthorityCodes.USER_DELETE + "')")
     public ResultMessage deleteUser(@PathVariable String userId) {
         userService.deleteUser(userId);
         return new ResultMessage();

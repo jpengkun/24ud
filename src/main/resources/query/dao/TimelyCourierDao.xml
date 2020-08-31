@@ -43,6 +43,14 @@
         WHERE phone=#{phone}
     </select>
 
+    <select id="queryByCourierId" resultType="java.lang.String">
+        select wb_id
+        from timely_wb_log
+        where courier_id = #{userId}
+        and state = #{type}
+        order by create_time desc
+    </select>
+
     <update id="updateCourierStateByIds"
             parameterType="cn.huaruan.ud24.vo.UpdateCourierStateVo">
         UPDATE `timely_courier`
@@ -52,4 +60,11 @@
             #{item}
         </foreach>
     </update>
+
+    <select id="queryRidersByShopName" >
+        select *
+        from timely_courier
+        where small_shop_name = #{shopName}
+    </select>
+
 </mapper>

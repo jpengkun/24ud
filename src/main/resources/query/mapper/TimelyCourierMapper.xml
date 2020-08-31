@@ -88,7 +88,7 @@
   <sql id="Base_Column_List">
     id, name, phone, emergency_people, emergency_phone, certificate_type, identity, school, 
     education, address, deposit, head_portrait, create_time, login_time, sex, password, 
-    remark, state, income, front, back, diploma, franchisee_id, money
+    remark, state, income, front, back, diploma, franchisee_id, money,small_shop_name,cap,small_shop_id,is_open
   </sql>
   <select id="selectByExample" parameterType="cn.huaruan.ud24.query.entity.TimelyCourierExample" resultMap="BaseResultMap">
     select
@@ -218,6 +218,9 @@
       <if test="smallShopName != null">
         small_shop_name,
       </if>
+      <if test="smallShopId != null">
+        small_shop_id,
+      </if>
       <if test="cap != null">
         cap,
       </if>
@@ -297,6 +300,9 @@
       </if>
       <if test="smallShopName != null">
         #{smallShopName,jdbcType=VARCHAR},
+      </if>
+      <if test="smallShopId != null">
+        #{smallShopId,jdbcType=VARCHAR},
       </if>
       <if test="cap != null">
         #{cap,jdbcType=INTEGER},
@@ -518,7 +524,11 @@
       back = #{back,jdbcType=VARCHAR},
       diploma = #{diploma,jdbcType=VARCHAR},
       franchisee_id = #{franchiseeId,jdbcType=VARCHAR},
-      money = #{money,jdbcType=DECIMAL}
+      money = #{money,jdbcType=DECIMAL},
+      small_shop_name = #{smallShopName},
+      cap = #{cap},
+      small_shop_id = #{smallShopId},
+      is_open = #{isOpen}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

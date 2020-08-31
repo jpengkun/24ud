@@ -1,7 +1,7 @@
 package cn.huaruan.ud24.controller;
 
+import cn.huaruan.ud24.application.query.Page;
 import cn.huaruan.ud24.query.entity.Authority;
-import cn.huaruan.ud24.security.AuthorityCodes;
 import cn.huaruan.ud24.security.SecurityUser;
 import cn.huaruan.ud24.security.WebSecurityConfig;
 import cn.huaruan.ud24.service.SecurityService;
@@ -12,12 +12,10 @@ import cn.huaruan.ud24.application.RequestUtils;
 import cn.huaruan.ud24.application.ResultMessage;
 import cn.huaruan.ud24.application.common.OkHttpUtils;
 import cn.huaruan.ud24.application.exception.AppRunException;
-import cn.huaruan.ud24.application.query.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;

@@ -4,7 +4,6 @@ import cn.huaruan.ud24.application.ResultMessage;
 import cn.huaruan.ud24.application.query.Page;
 import cn.huaruan.ud24.constant.TimelyWaybillState;
 import cn.huaruan.ud24.query.entity.TimelyWaybill;
-import cn.huaruan.ud24.query.entity.TimelyWbLog;
 import cn.huaruan.ud24.vo.*;
 import cn.huaruan.ud24.service.TimelyWaybillService;
 import io.swagger.annotations.Api;
@@ -13,8 +12,6 @@ import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.springframework.data.geo.Point;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * @author outas
@@ -30,6 +27,7 @@ public class TimelyWaybillController {
     @GetMapping
     @ApiOperation("条件分页查询")
     public ResultMessage<Page<TimelyWaybill>> findCourierWithSubCourier(FindWaybillParam findWaybillParam) {
+
         Page<TimelyWbWithLogs> wbWithLogsPage = waybillService.getAllByParamPaged(findWaybillParam);
         return new ResultMessage(wbWithLogsPage);
     }
@@ -39,6 +37,8 @@ public class TimelyWaybillController {
     public ResultMessage<TimelyWaybill> findById(@PathVariable String id) {
         return new ResultMessage<>(waybillService.findById(id));
     }
+
+
 
     @GetMapping("/no/{no}")
     @ApiOperation("根据运单号查询")
@@ -60,6 +60,14 @@ public class TimelyWaybillController {
         CircleVo circleVo = new CircleVo(new Point(x, y), radius, TimelyWaybillState.WAITING_ORDER.getState());
         return new ResultMessage<>(waybillService.findWithinRadius(circleVo));
     }
+
+    @GetMapping("/signFor")
+    @ApiOperation("签收")
+    public ResultMessage signFor(String wbId,String userId){
+        waybillService.signFor(wbId,userId);
+        return new ResultMessage<>().success();
+    }
+
 
     @GetMapping("/todo")
     @ApiOperation("快递员查询待完成的运单列表")

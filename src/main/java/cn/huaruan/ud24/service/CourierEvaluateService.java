@@ -4,7 +4,6 @@ import cn.huaruan.ud24.application.AppAsserts;
 import cn.huaruan.ud24.application.common.EntityUtils;
 import cn.huaruan.ud24.application.query.Page;
 import cn.huaruan.ud24.query.dao.CourierEvaluateDao;
-import cn.huaruan.ud24.query.entity.TodaysCourier;
 import cn.huaruan.ud24.query.entity.CourierEvaluate;
 import cn.huaruan.ud24.query.entity.CourierEvaluateExample;
 import cn.huaruan.ud24.vo.FindEvaluateAboutCourierParam;

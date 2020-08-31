@@ -3,16 +3,11 @@ package cn.huaruan.ud24.controller;
 import cn.huaruan.ud24.application.ResultMessage;
 import cn.huaruan.ud24.application.common.PdfUtils;
 import cn.huaruan.ud24.application.query.Page;
-import cn.huaruan.ud24.query.entity.TodaysWaybill;
-import cn.huaruan.ud24.query.entity.TodaysWbLog;
 import cn.huaruan.ud24.service.TodaysWaybillService;
 import cn.huaruan.ud24.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-import org.springframework.data.geo.Point;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;

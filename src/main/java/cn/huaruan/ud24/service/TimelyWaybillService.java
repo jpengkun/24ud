@@ -6,10 +6,7 @@ import cn.huaruan.ud24.application.common.EntityUtils;
 import cn.huaruan.ud24.application.common.UUIDUtil;
 import cn.huaruan.ud24.application.query.Page;
 import cn.huaruan.ud24.application.query.QueryUtils;
-import cn.huaruan.ud24.constant.OrganizationLevel;
-import cn.huaruan.ud24.constant.ResultStatus;
-import cn.huaruan.ud24.constant.TimelyWaybillState;
-import cn.huaruan.ud24.constant.TodaysWaybillState;
+import cn.huaruan.ud24.constant.*;
 import cn.huaruan.ud24.query.dao.*;
 import cn.huaruan.ud24.query.entity.QuestionWaybill;
 import cn.huaruan.ud24.query.entity.TimelyCourier;
@@ -25,7 +22,6 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -260,4 +256,9 @@ public class TimelyWaybillService {
         List<TimelyWaybill> timelyWaybills = waybillDao.getOrderHistoryRiderId(riderId);
         return new Page<>(total,timelyWaybills);
     }
+    public void signFor(String wbId, String userId) {
+            waybillDao.signFor(UUIDUtil.get(),wbId,userId);
+    }
+
+
 }

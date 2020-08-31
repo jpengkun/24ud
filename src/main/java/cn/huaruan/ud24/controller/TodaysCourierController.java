@@ -7,7 +7,6 @@ import cn.huaruan.ud24.service.TodaysCourierService;
 import cn.huaruan.ud24.vo.FindCourierParam;
 import cn.huaruan.ud24.vo.TodaysCourierWithOrganization;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;

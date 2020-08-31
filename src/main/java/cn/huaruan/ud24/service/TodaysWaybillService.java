@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -77,7 +76,7 @@ public class TodaysWaybillService {
         long count = waybillDao.countTodaysWaybill(findWaybillParam);
         List<TodaysWbWithLogs> waybillList = waybillDao.findTodaysWaybillWithLogs(findWaybillParam);
 
-        return new Page<>(count, waybillList);
+        return new cn.huaruan.ud24.application.query.Page<>(count, waybillList);
     }
 
     public TodaysWbWithLogs insert(TodaysWaybillVo waybill) {
@@ -414,13 +413,13 @@ public class TodaysWaybillService {
         logDao.insert(log);
     }
 
-    public Page<TodaysWbWithLogs> findByCidAndState(FindWbByCidAndState findWbByCidAndState) {
+    public cn.huaruan.ud24.application.query.Page<TodaysWbWithLogs> findByCidAndState(FindWbByCidAndState findWbByCidAndState) {
         AppAsserts.hasText(findWbByCidAndState.getCourierId(), "快递员id不能为空！");
         AppAsserts.notNull(findWbByCidAndState.getState(), "要查询的运单状态不能为空！");
 
         long count = waybillDao.countByCourierIdAndState(findWbByCidAndState);
         List<TodaysWbWithLogs> timelyWbWithLogs = waybillDao.findByCourierIdAndState(findWbByCidAndState);
-        return new Page<>(count, timelyWbWithLogs);
+        return new cn.huaruan.ud24.application.query.Page<>(count, timelyWbWithLogs);
     }
 
     private void checkState(TodaysWaybillState stateEnum, Integer state) {
@@ -442,11 +441,11 @@ public class TodaysWaybillService {
         return waybillDao.findByNo(no);
     }
 
-    public Page<TodaysWbWithLogs> findByOpenId(FindWbByOpenId findWbByOpenId) {
+    public cn.huaruan.ud24.application.query.Page<TodaysWbWithLogs> findByOpenId(FindWbByOpenId findWbByOpenId) {
         AppAsserts.hasText(findWbByOpenId.getOpenId(), "openId不能为空！");
         long count = waybillDao.countByOpenId(findWbByOpenId);
         List<TodaysWbWithLogs> waybill = waybillDao.findByOpenId(findWbByOpenId);
-        return new Page<>(count, waybill);
+        return new cn.huaruan.ud24.application.query.Page<>(count, waybill);
     }
 
     public List<TodaysWaybill> findByIdIn(List<String> ids) {
@@ -553,7 +552,7 @@ public class TodaysWaybillService {
      * @param findWaybillParam 条件
      * @return 一页运单
      */
-    public Page<TodaysWbWithLogs> find4Vip(FindWaybill4VipParam findWaybillParam) {
+    public cn.huaruan.ud24.application.query.Page<TodaysWbWithLogs> find4Vip(FindWaybill4VipParam findWaybillParam) {
 
         //AppAsserts.notNull(findWaybillParam.getState(), "状态不能为空");
         //AppAsserts.notNull(findWaybillParam.getType(), "用户类型不能为空");
@@ -563,7 +562,7 @@ public class TodaysWaybillService {
         long count = waybillDao.countWaybill4Vip(findWaybillParam);
         List<TodaysWbWithLogs> waybills = waybillDao.findWaybill4Vip(findWaybillParam);
 
-        return new Page<>(count, waybills);
+        return new cn.huaruan.ud24.application.query.Page<>(count, waybills);
     }
 
 }

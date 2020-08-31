@@ -87,4 +87,5 @@ public class TimelyWaybill {
     @ApiModelProperty("骑手id")
     private String riderId;
 
+
 }

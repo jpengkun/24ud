@@ -246,7 +246,7 @@
         </if>
     </sql>
 
-    <sql id="pageParam">
+    <sql id="getTimelyNo">
         <if test="limit != null and limit !=''">
             LIMIT #{limit}
         </if>
@@ -342,7 +342,7 @@
         FROM `todays_waybill` `tw`
         WHERE 1 = 1
         <include refid="findWaybillParam"/>
-        <include refid="pageParam"/>
+        <include refid="getTimelyNo"/>
         ) AS `tw`
         <include refid="joinList"/>
         <include refid="orderList"/>
@@ -388,7 +388,7 @@
             <otherwise/>
         </choose>
         )
-        <include refid="pageParam"/>
+        <include refid="getTimelyNo"/>
         ) AS `tw`
         <include refid="joinList"/>
         <include refid="orderList"/>
@@ -483,7 +483,7 @@
         <if test="state != null ">
             AND `state` = #{state}
         </if>
-        <include refid="pageParam"/>
+        <include refid="getTimelyNo"/>
         ) AS `tw`
         <include refid="joinList"/>
         ORDER BY
@@ -540,7 +540,7 @@
                 AND `open_id` = #{vipUserId}
             </if>
         </if>
-        <include refid="pageParam"/>
+        <include refid="getTimelyNo"/>
         ) AS `tw`
         <include refid="joinList"/>
         <include refid="orderList"/>

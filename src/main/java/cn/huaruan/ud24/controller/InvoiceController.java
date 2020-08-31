@@ -2,22 +2,15 @@ package cn.huaruan.ud24.controller;
 
 import cn.huaruan.ud24.application.ResultMessage;
 import cn.huaruan.ud24.application.query.Page;
-import cn.huaruan.ud24.query.entity.Invoice;
 import cn.huaruan.ud24.service.InvoiceService;
 import cn.huaruan.ud24.vo.FindInvoiceParam;
 import cn.huaruan.ud24.vo.InvoiceWithItem;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 
 @RestController
 @AllArgsConstructor

@@ -19,11 +19,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 即时达运单服务类
@@ -251,11 +253,29 @@ public class TimelyWaybillService {
         }
     }
 
-    public Page<TimelyWaybill> getOrderHistory(String riderId) {
+    /**
+     * 历史接单
+     * @param map
+     * @return
+     */
+    public Page<TimelyWaybill> getOrderHistory(Map map) {
+        Double money = 0.00;
+        BigDecimal bigDecimal = new BigDecimal(money.toString());
+        String riderId = (String) map.get("riderId");
+        String years = (String) map.get("years");
+        String month = (String) map.get("month");
         long total = waybillDao.countTimelyWaybills(riderId);
-        List<TimelyWaybill> timelyWaybills = waybillDao.getOrderHistoryRiderId(riderId);
+        List<TimelyWaybill> timelyWaybills = waybillDao.getOrderHistoryRiderId(riderId,years,month);
+        for (TimelyWaybill timelyWaybill : timelyWaybills) {
+            bigDecimal = bigDecimal.add(timelyWaybill.getAmount());
+        }
+        for (TimelyWaybill timelyWaybill : timelyWaybills) {
+            timelyWaybill.setTotalAmount(bigDecimal);
+        }
         return new Page<>(total,timelyWaybills);
     }
+
+
     public void signFor(String wbId, String userId) {
             waybillDao.signFor(UUIDUtil.get(),wbId,userId);
     }

@@ -12,6 +12,7 @@
     <result column="waybill_id" jdbcType="VARCHAR" property="waybillId" />
     <result column="open_id" jdbcType="VARCHAR" property="openId" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="destroy_cause" jdbcType="VARCHAR" property="destroyCause" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -108,11 +109,11 @@
     insert into complaint (id, category, create_time, 
       detail, state, tel, 
       type, waybill_id, open_id, 
-      remark)
+      remark,destroy_cause)
     values (#{id,jdbcType=VARCHAR}, #{category,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{detail,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{tel,jdbcType=VARCHAR}, 
       #{type,jdbcType=VARCHAR}, #{waybillId,jdbcType=VARCHAR}, #{openId,jdbcType=VARCHAR}, 
-      #{remark,jdbcType=VARCHAR})
+      #{remark,jdbcType=VARCHAR},#{destroyCause,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cn.huaruan.ud24.query.entity.Complaint">
     insert into complaint

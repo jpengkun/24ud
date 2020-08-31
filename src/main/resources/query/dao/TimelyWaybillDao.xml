@@ -441,11 +441,11 @@
         ELSE 1
         END)
     </select>
-    <select id="getOrderHistoryRiderId" resultMap="TimelyWaybillType" parameterType="String">
+    <select id="getOrderHistoryRiderId" resultMap="TimelyWaybillType">
         SELECT *
         FROM `timely_waybill`
-        where rider_id = #{riderId}
-        ORDER BY month(create_time) DESC
+        where rider_id = #{riderId} AND DATE_FORMAT(create_time, '%Y') = #{years} AND DATE_FORMAT(create_time, '%m') = #{month}
+        ORDER BY month(create_time) ASC
     </select>
     <select id="countTimelyWaybills" resultType="long" parameterType="String">
         SELECT count(*)

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface TimelyWaybillDao extends TimelyWaybillMapper {
@@ -42,7 +43,7 @@ public interface TimelyWaybillDao extends TimelyWaybillMapper {
 
     void signFor(@Param("uuid") String uuid, @Param("wbId") String wbId, @Param("userId") String userId);
 
-    List<TimelyWaybill> getOrderHistoryRiderId(@Param("riderId")String riderId);
+    List<TimelyWaybill> getOrderHistoryRiderId(@Param("riderId") String riderId, @Param("years") String years, @Param("month") String month);
 
     long countTimelyWaybills(@Param("riderId")String riderId);
 }

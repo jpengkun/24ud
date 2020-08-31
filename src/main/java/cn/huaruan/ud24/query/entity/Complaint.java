@@ -44,4 +44,7 @@ public class Complaint {
 
     @ApiModelProperty("备注")
     private String remark;
+
+    @ApiModelProperty("销单原因")
+    private String destroyCause;
 }

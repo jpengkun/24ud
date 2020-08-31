@@ -53,5 +53,14 @@ public class ComplaintController {
         return new ResultMessage<>();
     }
 
+    @PostMapping("/addPinSingle")
+    @ApiOperation("快递员申诉销单接口")
+    public ResultMessage<String> addPinSingle(@RequestBody Complaint complaint){
+        complaintService.addPinSingle(complaint);
+        return new ResultMessage<>();
+    }
+
+
+
 
 }

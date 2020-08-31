@@ -54,6 +54,13 @@ public class ComplaintService {
     }
 
 
-
-
+    public void addPinSingle(Complaint complaint) {
+        AppAsserts.notNull(complaint.getDetail(),"投诉详情不能为空");
+        AppAsserts.notNull(complaint.getTel(),"电话不能为空");
+        AppAsserts.notNull(complaint.getDestroyCause(),"销单原因不能为空");
+        complaint.setId(UUIDUtil.get());
+        complaint.setCreateTime(new Date());
+        complaint.setState(1);
+        complaintDao.insert(complaint);
+    }
 }

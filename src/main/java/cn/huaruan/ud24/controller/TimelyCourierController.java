@@ -133,8 +133,8 @@ public class TimelyCourierController {
 
     @PostMapping("/getOrderHistory")
     @ApiOperation("根据id查找历史订单")
-    public ResultMessage<Page<TimelyWaybill>> getOrderHistory(@RequestBody TimelyWaybill timelyWaybill) {
-        return new ResultMessage<>(timelyWaybillService.getOrderHistory(timelyWaybill.getRiderId()));
+    public ResultMessage<Page<TimelyWaybill>> getOrderHistory(@RequestBody Map map) {
+        return new ResultMessage<Page<TimelyWaybill>>(timelyWaybillService.getOrderHistory(map));
     }
 
     @GetMapping("/scanPackge/{orderId}")

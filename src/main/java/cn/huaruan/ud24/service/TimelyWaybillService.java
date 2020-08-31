@@ -3,6 +3,7 @@ package cn.huaruan.ud24.service;
 import cn.huaruan.ud24.application.AppAsserts;
 import cn.huaruan.ud24.application.ResultMessage;
 import cn.huaruan.ud24.application.common.EntityUtils;
+import cn.huaruan.ud24.query.entity.TimelyUtil;
 import cn.huaruan.ud24.application.common.UUIDUtil;
 import cn.huaruan.ud24.application.query.Page;
 import cn.huaruan.ud24.application.query.QueryUtils;
@@ -11,10 +12,8 @@ import cn.huaruan.ud24.query.dao.*;
 import cn.huaruan.ud24.query.entity.QuestionWaybill;
 import cn.huaruan.ud24.query.entity.TimelyCourier;
 import cn.huaruan.ud24.query.entity.TimelyWaybill;
-import cn.huaruan.ud24.query.entity.TimelyWbLog;
 import cn.huaruan.ud24.vo.*;
 import lombok.AllArgsConstructor;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -25,7 +24,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 即时达运单服务类
@@ -255,17 +253,14 @@ public class TimelyWaybillService {
 
     /**
      * 历史接单
-     * @param map
+     * @param timelyUtil
      * @return
      */
-    public Page<TimelyWaybill> getOrderHistory(Map map) {
+    public Page<TimelyWaybill> getOrderHistory(TimelyUtil timelyUtil) {
         Double money = 0.00;
         BigDecimal bigDecimal = new BigDecimal(money.toString());
-        String riderId = (String) map.get("riderId");
-        String years = (String) map.get("years");
-        String month = (String) map.get("month");
-        long total = waybillDao.countTimelyWaybills(riderId);
-        List<TimelyWaybill> timelyWaybills = waybillDao.getOrderHistoryRiderId(riderId,years,month);
+        long total = waybillDao.countTimelyWaybills(timelyUtil.getRiderId());
+        List<TimelyWaybill> timelyWaybills = waybillDao.getOrderHistoryRiderId(timelyUtil);
         for (TimelyWaybill timelyWaybill : timelyWaybills) {
             bigDecimal = bigDecimal.add(timelyWaybill.getAmount());
         }

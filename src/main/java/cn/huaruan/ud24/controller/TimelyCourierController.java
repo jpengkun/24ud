@@ -3,23 +3,20 @@ package cn.huaruan.ud24.controller;
 import cn.huaruan.ud24.application.ResultMessage;
 import cn.huaruan.ud24.application.common.IdCard;
 import cn.huaruan.ud24.application.common.SmsUtils;
+import cn.huaruan.ud24.query.entity.TimelyUtil;
 import cn.huaruan.ud24.application.common.UUIDUtil;
 import cn.huaruan.ud24.application.query.Page;
-import cn.huaruan.ud24.constant.ResultStatus;
-import cn.huaruan.ud24.query.dao.TimelyCourierDao;
 import cn.huaruan.ud24.query.dao.TimelyWaybillDao;
 import cn.huaruan.ud24.query.entity.*;
 import cn.huaruan.ud24.service.TimelyCourierService;
 import cn.huaruan.ud24.service.TimelyWaybillService;
 import cn.huaruan.ud24.vo.*;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -27,7 +24,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/timely/courier")
@@ -133,8 +129,8 @@ public class TimelyCourierController {
 
     @PostMapping("/getOrderHistory")
     @ApiOperation("根据id查找历史订单")
-    public ResultMessage<Page<TimelyWaybill>> getOrderHistory(@RequestBody Map map) {
-        return new ResultMessage<Page<TimelyWaybill>>(timelyWaybillService.getOrderHistory(map));
+    public ResultMessage<Page<TimelyWaybill>> getOrderHistory(@RequestBody TimelyUtil timelyUtil) {
+        return new ResultMessage<Page<TimelyWaybill>>(timelyWaybillService.getOrderHistory(timelyUtil));
     }
 
     @GetMapping("/scanPackge/{orderId}")

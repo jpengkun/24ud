@@ -441,7 +441,7 @@
         ELSE 1
         END)
     </select>
-    <select id="getOrderHistoryRiderId" resultMap="TimelyWaybillType">
+    <select id="getOrderHistoryRiderId" resultMap="TimelyWaybillType" parameterType="cn.huaruan.ud24.query.entity.TimelyUtil">
         SELECT *
         FROM `timely_waybill`
         where rider_id = #{riderId} AND DATE_FORMAT(create_time, '%Y') = #{years} AND DATE_FORMAT(create_time, '%m') = #{month}

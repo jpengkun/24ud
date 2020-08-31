@@ -90,5 +90,11 @@ public class TimelyWaybill {
     @ApiModelProperty("月总运费")
     private BigDecimal totalAmount;
 
+    @ApiModelProperty("年")
+    private String years;
+
+    @ApiModelProperty("月")
+    private String month;
+
 
 }

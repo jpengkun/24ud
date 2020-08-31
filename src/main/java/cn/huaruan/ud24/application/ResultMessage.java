@@ -28,6 +28,9 @@ public class ResultMessage<E> {
     @ApiModelProperty("结果数据或异常调试信息")
     private Object data;
 
+    @ApiModelProperty("用户手机号")
+    private String phone;
+
     /**
      * 默认构造为成功，因为失败还可以用异常。
      */
@@ -39,6 +42,14 @@ public class ResultMessage<E> {
      */
     public ResultMessage(E data) {
         this.data = data;
+    }
+
+    /**
+     * 默认构造为成功并设置数据。
+     */
+    public ResultMessage(E data,String phone) {
+        this.data = data;
+        this.phone = phone;
     }
 
     public ResultMessage(ResultStatus status) {

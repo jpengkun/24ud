@@ -40,4 +40,6 @@ public interface TimelyWbLogMapper {
     int updateByPrimaryKeyWithBLOBs(TimelyWbLog record);
 
     int updateByPrimaryKey(TimelyWbLog record);
+
+    int updateTimelyWbLogAndState(@Param("timelyWbLogState") Integer timelyWbLogState,@Param("waybillId") String waybillId);
 }

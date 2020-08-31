@@ -36,7 +36,7 @@ public class Complaint {
     @ApiModelProperty("投诉类型")
     private String type;
 
-    @ApiModelProperty("被投诉的运单编号")
+    @ApiModelProperty("被投诉的运单id")
     private String waybillId;
 
     @ApiModelProperty("")
@@ -47,4 +47,7 @@ public class Complaint {
 
     @ApiModelProperty("销单原因")
     private String destroyCause;
+
+    @ApiModelProperty("投诉的状态(状态[1:待接单, 2:待取件, 3:已取件, 4:派送中, 5:待签收, 6:已签收, 7:转单, 10:异常件])")
+    private Integer timelyWbLogState;
 }

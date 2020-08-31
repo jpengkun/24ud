@@ -48,4 +48,6 @@ public interface TimelyWaybillDao extends TimelyWaybillMapper {
     Integer countTimelyWaybills(TimelyUtil timelyUtil);
 
     List<TimelyWaybill> getOrderHistoryRiderId(TimelyUtil timelyUtil);
+
+    TimelyWaybill findByTmNo(@Param("waybillId") String waybillId);
 }

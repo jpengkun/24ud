@@ -4,14 +4,18 @@ import cn.huaruan.ud24.application.AppAsserts;
 import cn.huaruan.ud24.application.common.UUIDUtil;
 import cn.huaruan.ud24.application.query.Page;
 import cn.huaruan.ud24.query.dao.ComplaintDao;
-import cn.huaruan.ud24.query.entity.Complaint;
-import cn.huaruan.ud24.query.entity.ComplaintExample;
+import cn.huaruan.ud24.query.dao.TimelyWaybillDao;
+import cn.huaruan.ud24.query.dao.TimelyWbLogDao;
+import cn.huaruan.ud24.query.entity.*;
 import cn.huaruan.ud24.vo.ComplaintVo;
 import cn.huaruan.ud24.vo.FindComplaintParam;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +26,10 @@ import java.util.List;
 public class ComplaintService {
 
     private final ComplaintDao complaintDao;
+
+    private final TimelyWaybillDao timelyWaybillDao;
+
+    private final TimelyWbLogDao timelyWbLogDao;
 
     private final ComplaintLogsService complaintLogsService;
 
@@ -58,9 +66,28 @@ public class ComplaintService {
         AppAsserts.notNull(complaint.getDetail(),"投诉详情不能为空");
         AppAsserts.notNull(complaint.getTel(),"电话不能为空");
         AppAsserts.notNull(complaint.getDestroyCause(),"销单原因不能为空");
+        AppAsserts.notNull(complaint.getWaybillId(),"运单id不能为空");
         complaint.setId(UUIDUtil.get());
+        complaint.setTimelyWbLogState(10);
         complaint.setCreateTime(new Date());
-        complaint.setState(1);
+        timelyWbLogDao.updateTimelyWbLogAndState(complaint.getTimelyWbLogState(),complaint.getWaybillId());
         complaintDao.insert(complaint);
     }
+
+    public List<ComplaintWayBill> findByPhoneAll(ComplaintPageUtil complaintPageUtil) {
+        PageHelper.startPage(complaintPageUtil.getPageNo(),complaintPageUtil.getPageSize());
+        List<ComplaintWayBill> list  = new ArrayList<>();
+        ComplaintWayBill complaintWayBill = new ComplaintWayBill();
+        AppAsserts.notNull(complaintPageUtil.getTel(),"电话不能为空");
+        List<Complaint> byPhoneAll = complaintDao.findByPhoneAll(complaintPageUtil.getTel());
+        for (Complaint complaint : byPhoneAll) {
+            TimelyWaybill timelyWaybill = timelyWaybillDao.findByTmNo(complaint.getWaybillId());
+            complaintWayBill.setComplaint(complaint);
+            complaintWayBill.setTimelyWaybill(timelyWaybill);
+            list.add(complaintWayBill);
+        }
+        PageInfo<ComplaintWayBill> objectPageInfo = new PageInfo<>(list);
+        return objectPageInfo.getList();
+    }
+
 }

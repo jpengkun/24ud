@@ -3,6 +3,21 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.huaruan.ud24.query.dao.ComplaintDao">
 
+
+  <resultMap id="findComplaintAll" type="cn.huaruan.ud24.query.entity.Complaint">
+    <id column="id" jdbcType="VARCHAR" property="id"/>
+    <result column="category" jdbcType="VARCHAR" property="category"/>
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="detail" jdbcType="VARCHAR" property="detail"/>
+    <result column="state" jdbcType="INTEGER" property="state"/>
+    <result column="tel" jdbcType="VARCHAR" property="tel"/>
+    <result column="type" jdbcType="VARCHAR" property="type"/>
+    <result column="waybill_id" jdbcType="VARCHAR" property="waybillId"/>
+    <result column="open_id" jdbcType="VARCHAR" property="openId"/>
+    <result column="remark" jdbcType="VARCHAR" property="remark"/>
+    <result column="destroy_cause" jdbcType="VARCHAR" property="destroyCause"/>
+  </resultMap>
+
   <select id="countComplaint" resultType="java.lang.Long"
           parameterType="cn.huaruan.ud24.vo.FindComplaintParam">
     select count(*) from
@@ -69,5 +84,8 @@
     <if test="offset != null and offset !=''">
       OFFSET #{offset}
     </if>
+  </select>
+  <select id="findByPhoneAll" resultMap="findComplaintAll">
+        SELECT * FROM `complaint` WHERE tel=#{tel}
   </select>
 </mapper>

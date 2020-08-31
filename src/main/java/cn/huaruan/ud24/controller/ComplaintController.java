@@ -3,6 +3,8 @@ package cn.huaruan.ud24.controller;
 import cn.huaruan.ud24.application.ResultMessage;
 import cn.huaruan.ud24.application.query.Page;
 import cn.huaruan.ud24.query.entity.Complaint;
+import cn.huaruan.ud24.query.entity.ComplaintPageUtil;
+import cn.huaruan.ud24.query.entity.TimelyWbLog;
 import cn.huaruan.ud24.service.ComplaintService;
 import cn.huaruan.ud24.vo.ComplaintVo;
 import cn.huaruan.ud24.vo.FindComplaintParam;
@@ -54,13 +56,17 @@ public class ComplaintController {
     }
 
     @PostMapping("/addPinSingle")
-    @ApiOperation("快递员申诉销单接口")
+    @ApiOperation("添加快递员申诉销单接口")
     public ResultMessage<String> addPinSingle(@RequestBody Complaint complaint){
         complaintService.addPinSingle(complaint);
         return new ResultMessage<>();
     }
 
-
+    @ApiOperation("查询所有投诉")
+    @PostMapping("/findByPhoneAll")
+    public ResultMessage findByPhoneAll(@RequestBody ComplaintPageUtil complaintPageUtil) {
+        return new ResultMessage(complaintService.findByPhoneAll(complaintPageUtil));
+    }
 
 
 }

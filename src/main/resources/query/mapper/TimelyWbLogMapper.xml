@@ -320,4 +320,9 @@
       abnormal_type = #{abnormalType,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+  <update id="updateTimelyWbLogAndState">
+    update timely_wb_log
+    set state = #{timelyWbLogState,jdbcType=INTEGER}
+    where wb_id = #{waybillId,jdbcType=VARCHAR}
+  </update>
 </mapper>

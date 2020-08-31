@@ -78,7 +78,7 @@ public class AuthController {
         String jwt = jwtUtils.createJWT(loginRequest.getRememberMe(), principal.getUserId(), username.toString());
         principal.setAuthorization("Bearer " + jwt);
         response.setHeader("Authorization", "Bearer " + jwt);
-        return new ResultMessage<>(authentication.getPrincipal());
+        return new ResultMessage<>(authentication.getPrincipal(),loginRequest.getUsername());
     }
 
     @ApiOperation("登出")
@@ -112,9 +112,7 @@ public class AuthController {
                 sendMsgParam1.setTamp(sendMsgParam.getTamp());
                 sendMsgParam1.setPassword(sendMsgParam.getPassword());
                 SmsUtils.validate(sendMsgParam1);
-
                 byPhone.setPassword(sendMsgParam.getPassword());
-                System.out.println("=================888#W###:"+byPhone.getPassword());
                 byPhone.setPassword(sendMsgParam.getPassword());
                 courierService.updateCourier(byPhone);
                 return new ResultMessage(ResultStatus.SUCCESS);

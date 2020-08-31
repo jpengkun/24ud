@@ -457,5 +457,10 @@
         </if>
         and year(create_time) = #{years} and month(create_time) = #{month}
     </select>
+    <select id="findByTmNo" resultMap="TimelyWaybillType">
+        SELECT *
+        FROM `timely_waybill`
+        where id = #{waybillId}
+    </select>
 
 </mapper>

@@ -44,7 +44,8 @@ public interface TimelyWaybillDao extends TimelyWaybillMapper {
 
     void signFor(@Param("uuid") String uuid, @Param("wbId") String wbId, @Param("userId") String userId);
 
-    List<TimelyWaybill> getOrderHistoryRiderId(TimelyUtil timelyUtil);
 
     long countTimelyWaybills(@Param("riderId") String riderId, @Param("month") String month, @Param("years") String years);
+
+    List<TimelyWaybill> getOrderHistoryRiderId(@Param("riderId") String riderId, @Param("years") String years, @Param("month") String month);
 }

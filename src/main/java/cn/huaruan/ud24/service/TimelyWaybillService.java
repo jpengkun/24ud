@@ -8,10 +8,7 @@ import cn.huaruan.ud24.application.query.Page;
 import cn.huaruan.ud24.application.query.QueryUtils;
 import cn.huaruan.ud24.constant.*;
 import cn.huaruan.ud24.query.dao.*;
-import cn.huaruan.ud24.query.entity.QuestionWaybill;
-import cn.huaruan.ud24.query.entity.TimelyCourier;
-import cn.huaruan.ud24.query.entity.TimelyWaybill;
-import cn.huaruan.ud24.query.entity.TimelyWbLog;
+import cn.huaruan.ud24.query.entity.*;
 import cn.huaruan.ud24.vo.*;
 import lombok.AllArgsConstructor;
 import org.apache.ibatis.annotations.Param;
@@ -255,17 +252,14 @@ public class TimelyWaybillService {
 
     /**
      * 历史接单
-     * @param map
+     * @param timelyUtil
      * @return
      */
-    public Page<TimelyWaybill> getOrderHistory(Map map) {
+    public Page<TimelyWaybill> getOrderHistory(TimelyUtil timelyUtil) {
         Double money = 0.00;
         BigDecimal bigDecimal = new BigDecimal(money.toString());
-        String riderId = (String) map.get("riderId");
-        String years = (String) map.get("years");
-        String month = (String) map.get("month");
-        long total = waybillDao.countTimelyWaybills(riderId,month,years);
-        List<TimelyWaybill> timelyWaybills = waybillDao.getOrderHistoryRiderId(riderId,years,month);
+        long total = waybillDao.countTimelyWaybills(timelyUtil);
+        List<TimelyWaybill> timelyWaybills = waybillDao.getOrderHistoryRiderId(timelyUtil);
         for (TimelyWaybill timelyWaybill : timelyWaybills) {
             bigDecimal = bigDecimal.add(timelyWaybill.getAmount());
         }

@@ -1,5 +1,8 @@
 package cn.huaruan.ud24.application.query;
 
+import io.swagger.annotations.ApiModelProperty;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -11,10 +14,15 @@ import java.util.function.Consumer;
 public class Page<T> {
     private long total;
 
+    @ApiModelProperty("月总运费")
+    private BigDecimal totalAmount;
+
     private List<T> rows;
 
     public Page() {
     }
+
+
 
     public Page(List<T> rows) {
         if (rows == null) {
@@ -27,6 +35,12 @@ public class Page<T> {
     public Page(long total, List<T> rows) {
         this.total = total;
         this.rows = rows;
+    }
+
+    public Page(long total, List<T> rows,BigDecimal totalAmount) {
+        this.total = total;
+        this.rows = rows;
+        this.totalAmount = totalAmount;
     }
 
     public Page(com.github.pagehelper.Page page) {
@@ -57,5 +71,13 @@ public class Page<T> {
             this.rows.forEach(consumer);
         }
         return this;
+    }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
     }
 }

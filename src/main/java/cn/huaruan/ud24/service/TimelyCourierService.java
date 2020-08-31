@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
@@ -300,10 +301,14 @@ public class TimelyCourierService {
         //开启接单且空闲中的骑手
         List<TimelyCourier> timelyCouriers = timelyCourierDao.queryConformRiders(shopName);
         //每个骑手的平均评分
-        timelyCouriers.stream().sorted().forEach(tc ->{
+        timelyCouriers.stream().sorted().forEach(tc -> {
             Double avgEvaluateByCourierId = courierEvaluateDao.findAvgEvaluateByCourierId(tc.getId());
         });
-        TimelyCourier timelyCourier = timelyCouriers.get(0);
-        return timelyCourier;
+        if (null != timelyCouriers && timelyCouriers.size() > 0) {
+            TimelyCourier timelyCourier = timelyCouriers.get(0);
+            return timelyCourier;
+        }else {
+            return null;
+        }
     }
 }

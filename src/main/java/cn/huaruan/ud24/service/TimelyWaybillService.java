@@ -264,15 +264,12 @@ public class TimelyWaybillService {
         String riderId = (String) map.get("riderId");
         String years = (String) map.get("years");
         String month = (String) map.get("month");
-        long total = waybillDao.countTimelyWaybills(riderId);
+        long total = waybillDao.countTimelyWaybills(riderId,month,years);
         List<TimelyWaybill> timelyWaybills = waybillDao.getOrderHistoryRiderId(riderId,years,month);
         for (TimelyWaybill timelyWaybill : timelyWaybills) {
             bigDecimal = bigDecimal.add(timelyWaybill.getAmount());
         }
-        for (TimelyWaybill timelyWaybill : timelyWaybills) {
-            timelyWaybill.setTotalAmount(bigDecimal);
-        }
-        return new Page<>(total,timelyWaybills);
+        return new Page<>(total,timelyWaybills,bigDecimal);
     }
 
 

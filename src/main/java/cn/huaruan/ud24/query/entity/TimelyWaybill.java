@@ -87,8 +87,5 @@ public class TimelyWaybill {
     @ApiModelProperty("骑手id")
     private String riderId;
 
-    @ApiModelProperty("月总运费")
-    private BigDecimal totalAmount;
-
 
 }

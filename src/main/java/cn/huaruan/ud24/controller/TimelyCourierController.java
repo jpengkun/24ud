@@ -23,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -51,6 +52,9 @@ public class TimelyCourierController {
 
     @Autowired
     private AnnouncementController announcementController;
+
+    @Autowired
+    private TimelyWaybillController timelyWaybillController;
 
     @GetMapping("/condition")
     @ApiOperation("条件查询分页接口")
@@ -131,7 +135,7 @@ public class TimelyCourierController {
     }
 
 
-    @PostMapping("/getOrderHistory")
+    @PostMapping("/getOrder/history")
     @ApiOperation("根据id查找历史订单")
     public ResultMessage<Page<TimelyWaybill>> getOrderHistory(@RequestBody Map map) {
         return new ResultMessage<Page<TimelyWaybill>>(timelyWaybillService.getOrderHistory(map));
@@ -147,9 +151,30 @@ public class TimelyCourierController {
         //查询该笔订单来自哪家店铺
         String result = restTemplate.getForObject("http://localhost:8899/woho/myOrder/getOrderDetailsById/" + orderId, String.class);
         //查看该店铺下的骑手
-        com.alibaba.fastjson.JSONObject jsonObject = JSONObject.parseObject(result);
-        String shopName = jsonObject.getString("data");
-        System.out.println("==========店铺名666=========" + shopName);
+        JSONObject jsonObject = JSONObject.parseObject(result);
+        String data = jsonObject.getString("data");
+        JSONObject dateO = JSONObject.parseObject(data);
+        String shopName = dateO.getString("shopName");
+        String receiverPhone = dateO.getString("receiverPhone");
+        String receiverName = dateO.getString("receiverName");
+        String receiverAddress = dateO.getString("receiverAddress");
+        String sellerAddress = dateO.getString("sellerAddress");
+        String sellerPhone = dateO.getString("sellerPhone");
+        String sellerName = dateO.getString("sellerName");
+        String postFee = dateO.getString("postFee");
+        String weight = dateO.getString("weight");
+        TimelyWaybillVo waybill = new TimelyWaybillVo();
+        waybill.setReceiverPhone(receiverPhone);
+        waybill.setReceiver(receiverName);
+        waybill.setReceiverAddress(receiverAddress);
+        waybill.setSender(sellerName);
+        waybill.setSenderAddress(sellerAddress);
+        waybill.setSenderPhone(sellerPhone);
+        BigDecimal bigDecimalWeight = new BigDecimal(weight);
+        waybill.setGoodsWeight(bigDecimalWeight);
+        BigDecimal bigDecimal = new BigDecimal(postFee);
+        waybill.setAmount(bigDecimal);
+        timelyWaybillController.add(waybill);
         //List<String> timelyCouriers = timelyCourierService.queryRidersByShopName(shopName);
         /**
          * 派单规则(优先级：是否开启接单模式、是否已达单次接单上限、评分高低)
@@ -162,7 +187,9 @@ public class TimelyCourierController {
         announcement.setType(0);
         announcement.setContext("你有新的订单了,快去超市取货吧>>>>>");
         announcement.setContextType("0");
-        announcement.setUserId(timelyCourier.getId());
+        if (timelyCourier != null){
+            announcement.setUserId(timelyCourier.getId());
+        }
         announcement.setPushType(2);
         announcementController.push(announcement);
         return new ResultMessage();

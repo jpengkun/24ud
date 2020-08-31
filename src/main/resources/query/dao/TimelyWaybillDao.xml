@@ -454,6 +454,7 @@
         <if test="riderId != null and riderId.length()>0">
             AND `timely_waybill`.rider_id=#{riderId}
         </if>
+        and year(create_time) = #{years} and month(create_time) = #{month}
     </select>
 
 </mapper>

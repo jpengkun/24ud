@@ -1,5 +1,6 @@
 package cn.huaruan.ud24.query.dao;
 
+import cn.huaruan.ud24.query.entity.TimelyUtil;
 import cn.huaruan.ud24.query.entity.TimelyWaybill;
 import cn.huaruan.ud24.query.mapper.TimelyWaybillMapper;
 import cn.huaruan.ud24.vo.*;
@@ -43,7 +44,7 @@ public interface TimelyWaybillDao extends TimelyWaybillMapper {
 
     void signFor(@Param("uuid") String uuid, @Param("wbId") String wbId, @Param("userId") String userId);
 
-    List<TimelyWaybill> getOrderHistoryRiderId(@Param("riderId") String riderId, @Param("years") String years, @Param("month") String month);
+    List<TimelyWaybill> getOrderHistoryRiderId(TimelyUtil timelyUtil);
 
     long countTimelyWaybills(@Param("riderId") String riderId, @Param("month") String month, @Param("years") String years);
 }

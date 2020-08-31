@@ -133,8 +133,8 @@ public class TimelyCourierController {
 
     @PostMapping("/getOrder/history")
     @ApiOperation("根据id查找历史订单")
-    public ResultMessage<Page<TimelyWaybill>> getOrderHistory(@RequestBody TimelyUtil timelyUtil) {
-        return new ResultMessage<Page<TimelyWaybill>>(timelyWaybillService.getOrderHistory(timelyUtil));
+    public ResultMessage getOrderHistory(@RequestBody TimelyUtil timelyUtil) {
+        return new ResultMessage<>(timelyWaybillService.getOrderHistory(timelyUtil));
     }
 
     @GetMapping("/scanPackge/{orderId}")
@@ -166,8 +166,13 @@ public class TimelyCourierController {
         waybill.setSender(sellerName);
         waybill.setSenderAddress(sellerAddress);
         waybill.setSenderPhone(sellerPhone);
-        BigDecimal bigDecimalWeight = new BigDecimal(weight);
-        waybill.setGoodsWeight(bigDecimalWeight);
+        if (weight == null){
+            BigDecimal bigDecimalWeight = new BigDecimal(0.0);
+            waybill.setGoodsWeight(bigDecimalWeight);
+        }else {
+            BigDecimal bigDecimalWeight = new BigDecimal(0.5);
+            waybill.setGoodsWeight(bigDecimalWeight);
+        }
         BigDecimal bigDecimal = new BigDecimal(postFee);
         waybill.setAmount(bigDecimal);
         timelyWaybillController.add(waybill);

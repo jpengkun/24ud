@@ -10,6 +10,8 @@ import cn.huaruan.ud24.constant.*;
 import cn.huaruan.ud24.query.dao.*;
 import cn.huaruan.ud24.query.entity.*;
 import cn.huaruan.ud24.vo.*;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.AllArgsConstructor;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
@@ -255,15 +257,21 @@ public class TimelyWaybillService {
      * @param timelyUtil
      * @return
      */
-    public Page<TimelyWaybill> getOrderHistory(TimelyUtil timelyUtil) {
+    public List<TimelyWaybill> getOrderHistory(TimelyUtil timelyUtil) {
+        PageHelper.startPage(timelyUtil.getPageNo(),timelyUtil.getPageSize());
         Double money = 0.00;
         BigDecimal bigDecimal = new BigDecimal(money.toString());
-        long total = waybillDao.countTimelyWaybills(timelyUtil);
+        Integer integer = waybillDao.countTimelyWaybills(timelyUtil);
         List<TimelyWaybill> timelyWaybills = waybillDao.getOrderHistoryRiderId(timelyUtil);
         for (TimelyWaybill timelyWaybill : timelyWaybills) {
             bigDecimal = bigDecimal.add(timelyWaybill.getAmount());
         }
-        return new Page<>(total,timelyWaybills,bigDecimal);
+        PageInfo<TimelyWaybill> objectPageInfo = new PageInfo<>(timelyWaybills);
+        for (TimelyWaybill timelyWaybill : timelyWaybills) {
+            timelyWaybill.setTotal(integer);
+            timelyWaybill.setTotalAmount(bigDecimal);
+        }
+        return objectPageInfo.getList();
     }
 
 

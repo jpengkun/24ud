@@ -1,5 +1,6 @@
 package cn.huaruan.ud24.query.entity;
 
+import cn.huaruan.ud24.application.query.PageParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,7 +13,10 @@ import lombok.Data;
  **/
 @Data
 @ApiModel("历史接单工具类")
-public class TimelyUtil {
+public class TimelyUtil  {
+    private Integer pageNo;
+
+    private Integer pageSize;
 
     @ApiModelProperty("骑手id")
     private String riderId;

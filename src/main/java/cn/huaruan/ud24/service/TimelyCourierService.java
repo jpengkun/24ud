@@ -250,6 +250,9 @@ public class TimelyCourierService {
             incomeInfo.setIncome(BigDecimal.valueOf(0.0));
         }
         Double evaluate = courierEvaluateDao.findAvgEvaluateByCourierId(userId);
+        if (null == evaluate){
+            incomeInfo.setGrade(5.0);
+        }
         incomeInfo.setGrade(evaluate);
         //是否开启
         TimelyCourier timelyCourier = timelyCourierDao.selectByPrimaryKey(userId);

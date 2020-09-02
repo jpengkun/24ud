@@ -87,7 +87,12 @@ public class TimelyWaybillService {
 
         TimelyWbLogVo log = new TimelyWbLogVo();
         log.setWbId(id);
-        log.setState(TimelyWaybillState.WAITING_ORDER.getState());
+        log.setCourierId(waybill.getRiderId());
+        if (waybill.getType() == 1){
+            log.setState(4);
+        }else {
+            log.setState(TimelyWaybillState.WAITING_ORDER.getState());
+        }
         insertLog(log);
 
         return findById(id);

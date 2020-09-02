@@ -146,6 +146,8 @@ public class TimelyCourierController {
         timelyWaybill.setTmNo("24" + LocalDateTime.now(ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyyMMddhhmmssSS")));
         //查询该笔订单来自哪家店铺
         String result = restTemplate.getForObject("http://localhost:8899/woho/myOrder/getOrderDetailsById/" + orderId, String.class);
+        //修改订单状态为配送中
+        restTemplate.getForObject("http://localhost:8899/woho/myOrder//updateSend/" + orderId, String.class);
         //查看该店铺下的骑手
         JSONObject jsonObject = JSONObject.parseObject(result);
         String data = jsonObject.getString("data");
@@ -173,9 +175,10 @@ public class TimelyCourierController {
             BigDecimal bigDecimalWeight = new BigDecimal(0.5);
             waybill.setGoodsWeight(bigDecimalWeight);
         }
-        BigDecimal bigDecimal = new BigDecimal(postFee);
+        BigDecimal bigDecimal = new BigDecimal(7.5);
         waybill.setAmount(bigDecimal);
-        timelyWaybillController.add(waybill);
+        waybill.setType(1);
+
         //List<String> timelyCouriers = timelyCourierService.queryRidersByShopName(shopName);
         /**
          * 派单规则(优先级：是否开启接单模式、是否已达单次接单上限、评分高低)
@@ -185,11 +188,13 @@ public class TimelyCourierController {
         TimelyCourier timelyCourier = timelyCourierService.queryConformRiders(shopName);
         //给骑手推送
         Announcement announcement = new Announcement();
-        announcement.setType(0);
+        announcement.setType(2);
         announcement.setContext("你有新的订单了,快去超市取货吧>>>>>");
         announcement.setContextType("0");
         if (timelyCourier != null){
             announcement.setUserId(timelyCourier.getId());
+            waybill.setRiderId(timelyCourier.getId());
+            timelyWaybillController.add(waybill);
         }
         announcement.setPushType(2);
         announcementController.push(announcement);

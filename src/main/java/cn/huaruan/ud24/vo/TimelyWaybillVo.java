@@ -18,4 +18,6 @@ public class TimelyWaybillVo extends TimelyWaybill {
 
     @ApiModelProperty("收件人位置经纬度")
     private Point receiverLocation;
+
+    private Integer type;
 }

@@ -101,6 +101,7 @@ custom:
         - "/webjars/**"
         - "/v2/api-docs"
         - "/backPwd/**"
+        - "/timely/courier/scanPackge/**"
         # ===================
 jpush:
   appKey: 00a89962a93799cd5d63e16c

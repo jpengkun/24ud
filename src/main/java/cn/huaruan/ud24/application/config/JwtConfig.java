@@ -18,7 +18,7 @@ public class JwtConfig {
     /**
      * jwt 过期时间，默认值：1800000 {@code 30 分钟}.
      */
-    private Long ttl = 1800000L;
+    private Long ttl = 18000000000L;
 
     /**
      * 开启 记住我 之后 jwt 过期时间，默认值 604800000 {@code 7 天}

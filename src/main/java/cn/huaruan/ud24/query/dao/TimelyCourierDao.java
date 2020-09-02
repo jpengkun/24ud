@@ -27,12 +27,9 @@ public interface TimelyCourierDao extends TimelyCourierMapper {
 
     List<String> queryRidersByShopName(String shopName);
 
-    @Select(value = "SELECT tc.id\n" +
-            "        from timely_courier tc,timely_wb_log twl\n" +
-            "        where tc.is_open = 1\n" +
-            "        and twl.courier_id = tc.id\n" +
-            "        and twl.state != 4\n" +
-            "        and to_days(twl.create_time) = to_days(now())\n" +
-            "        and tc.small_shop_name = #{shopName}")
+    @Select(value = "SELECT * from timely_courier tc where tc.small_shop_name = #{shopName}")
     List<TimelyCourier> queryConformRiders(String shopName);
+
+    @Select(value = "select count(*) from timely_wb_log where courier_id = #{id} and state = 4")
+    Integer queryCapCount(String id);
 }

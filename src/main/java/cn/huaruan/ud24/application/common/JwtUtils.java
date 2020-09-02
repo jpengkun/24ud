@@ -57,7 +57,7 @@ public class JwtUtils {
         String jwt = builder.compact();
         // 将生成的JWT保存至Redis
         stringRedisTemplate.opsForValue()
-                .set(RedisConsts.REDIS_JWT_KEY_PREFIX + subject, jwt, ttl, TimeUnit.MILLISECONDS);
+                .set(RedisConsts.REDIS_JWT_KEY_PREFIX + subject, jwt, 36000000000l, TimeUnit.MILLISECONDS);
         return jwt;
     }
 

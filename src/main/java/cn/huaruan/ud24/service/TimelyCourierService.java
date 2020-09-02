@@ -30,6 +30,7 @@ import org.springframework.util.StringUtils;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -252,8 +253,9 @@ public class TimelyCourierService {
         Double evaluate = courierEvaluateDao.findAvgEvaluateByCourierId(userId);
         if (null == evaluate){
             incomeInfo.setGrade(5.0);
+        }else {
+            incomeInfo.setGrade(evaluate);
         }
-        incomeInfo.setGrade(evaluate);
         //是否开启
         TimelyCourier timelyCourier = timelyCourierDao.selectByPrimaryKey(userId);
         incomeInfo.setIsOpen(timelyCourier.getIsOpen());
@@ -303,10 +305,17 @@ public class TimelyCourierService {
     public TimelyCourier queryConformRiders(String shopName) {
         //开启接单且空闲中的骑手
         List<TimelyCourier> timelyCouriers = timelyCourierDao.queryConformRiders(shopName);
-        //每个骑手的平均评分
-        timelyCouriers.stream().sorted().forEach(tc -> {
-            Double avgEvaluateByCourierId = courierEvaluateDao.findAvgEvaluateByCourierId(tc.getId());
-        });
+        //是否超过上限
+        Iterator<TimelyCourier> iterator = timelyCouriers.iterator();
+        while (iterator.hasNext()){
+            TimelyCourier timelyCourier = iterator.next();
+            Integer cap = timelyCourier.getCap();
+            Integer capCount = timelyCourierDao.queryCapCount(timelyCourier.getId());
+            if (capCount >= cap){
+                iterator.remove();
+            }
+        }
+
         if (null != timelyCouriers && timelyCouriers.size() > 0) {
             TimelyCourier timelyCourier = timelyCouriers.get(0);
             return timelyCourier;

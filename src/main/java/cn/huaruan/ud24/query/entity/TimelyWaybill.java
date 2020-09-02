@@ -92,4 +92,7 @@ public class TimelyWaybill extends PageHai{
     @ApiModelProperty("月总运费")
     private BigDecimal totalAmount;
 
+    @ApiModelProperty("运送货物时长")
+    private Long totalTime;
+
 }

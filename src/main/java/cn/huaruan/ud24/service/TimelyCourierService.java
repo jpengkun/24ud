@@ -266,9 +266,9 @@ public class TimelyCourierService {
         PageHelper.startPage(getTimelyNo.getPageNo(), getTimelyNo.getPageSize());
         ArrayList<TimelyWbInfo> timelyWbInfos = new ArrayList<>();
         //运单编号集合
-        List<String> strings = timelyCourierDao.queryByCourierId(getTimelyNo.getUserId(), getTimelyNo.getType());
-        for (String string : strings) {
-            TimelyWaybill timelyWaybill = timelyWaybillMapper.queryByTmNo(string);
+        List<TimelyWbLog> strings = timelyCourierDao.queryByCourierId(getTimelyNo.getUserId(), getTimelyNo.getType());
+        for (TimelyWbLog timelyWbLog : strings) {
+            TimelyWaybill timelyWaybill = timelyWaybillMapper.queryByTmNo(timelyWbLog.getWbId());
             TimelyWbInfo info = new TimelyWbInfo();
             info.setReceiver(timelyWaybill.getReceiver());
             info.setReceiverAddress(timelyWaybill.getReceiverAddress());
@@ -279,6 +279,12 @@ public class TimelyCourierService {
             info.setAmount(timelyWaybill.getAmount());
             info.setCreateTime(timelyWaybill.getCreateTime());
             info.setWbId(timelyWaybill.getId());
+            Date createTime = timelyWbLog.getCreateTime();
+            Date closedTime = timelyWbLog.getClosedTime();
+            Long time = closedTime.getTime();
+            Long time1 = createTime.getTime();
+            Long times = time-time1;
+            info.setTotalTime(times);
             timelyWbInfos.add(info);
         }
         PageInfo<TimelyWbInfo> infoPageInfo = new PageInfo<>(timelyWbInfos);

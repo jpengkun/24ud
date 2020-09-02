@@ -57,4 +57,8 @@ public class TimelyWbInfo extends PageHai {
 
     @ApiModelProperty("图片url，多张用英文逗号隔开")
     private String img;
+
+    @ApiModelProperty("配送所用时间")
+    private Long totalTime;
+
 }

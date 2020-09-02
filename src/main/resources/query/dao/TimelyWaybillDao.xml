@@ -444,7 +444,7 @@
     <select id="getOrderHistoryRiderId" resultMap="TimelyWaybillType" parameterType="cn.huaruan.ud24.query.entity.TimelyUtil">
         SELECT *
         FROM `timely_waybill`
-        where rider_id = #{riderId} AND DATE_FORMAT(create_time, '%Y') = #{years} AND DATE_FORMAT(create_time, '%m') = #{month}
+        where id = #{wbId} AND DATE_FORMAT(create_time, '%Y') = #{years} AND DATE_FORMAT(create_time, '%m') = #{month}
         ORDER BY month(create_time) ASC
     </select>
 
@@ -452,9 +452,7 @@
         SELECT count(*)
         FROM `timely_waybill`
         WHERE 1=1
-        <if test="riderId != null and riderId.length()>0">
-            AND `timely_waybill`.rider_id=#{riderId}
-        </if>
+            AND `timely_waybill`.id=#{wbId}
         and year(create_time) = #{years} and month(create_time) = #{month}
     </select>
     <select id="findByTmNo" resultMap="TimelyWaybillType">

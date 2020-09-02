@@ -21,7 +21,7 @@ public interface TimelyCourierDao extends TimelyCourierMapper {
 
     long updateCourierStateByIds(UpdateCourierStateVo updateCourierStateVo);
 
-    List<String> queryByCourierId(@Param("userId") String userId, @Param("type") Integer type);
+    List<TimelyWbLog> queryByCourierId(@Param("userId") String userId, @Param("type") Integer type);
 
     TimelyCourier selectByPhone(String phone);
 

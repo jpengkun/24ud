@@ -21,11 +21,18 @@ public class TimelyUtil  {
     @ApiModelProperty("骑手id")
     private String riderId;
 
+    @ApiModelProperty("订单id")
+    private String wbId;
+
     @ApiModelProperty("年")
     private String years;
 
     @ApiModelProperty("月")
     private String month;
+
+    @ApiModelProperty("订单状态")
+    private Integer state;
+
 
 
 }

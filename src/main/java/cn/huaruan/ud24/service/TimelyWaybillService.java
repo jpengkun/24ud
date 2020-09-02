@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -259,20 +260,39 @@ public class TimelyWaybillService {
      */
     public List<TimelyWaybill> getOrderHistory(TimelyUtil timelyUtil) {
         PageHelper.startPage(timelyUtil.getPageNo(),timelyUtil.getPageSize());
-        Double money = 0.00;
-        BigDecimal bigDecimal = new BigDecimal(money.toString());
-        Integer integer = waybillDao.countTimelyWaybills(timelyUtil);
-        List<TimelyWaybill> timelyWaybills = waybillDao.getOrderHistoryRiderId(timelyUtil);
-        for (TimelyWaybill timelyWaybill : timelyWaybills) {
-            bigDecimal = bigDecimal.add(timelyWaybill.getAmount());
+        BigDecimal bigDecimal = new BigDecimal("0.00");
+        timelyUtil.setState(6);
+        List<TimelyWbLog> orderHistoryRiderId = logDao.getOrderHistoryRiderId(timelyUtil);
+        List<TimelyWaybill> timelyWaybills = new ArrayList<>();
+        Integer integer = 0;
+        for (TimelyWbLog timelyWbLog : orderHistoryRiderId) {
+            timelyUtil.setWbId(timelyWbLog.getWbId());
+            integer += waybillDao.countTimelyWaybills(timelyUtil);
+            TimelyWaybill waybill1 = waybillDao.getOrderHistoryRiderId(timelyUtil);
+            if (waybill1!=null){
+                Date createTime = timelyWbLog.getCreateTime();
+                Date closedTime = timelyWbLog.getClosedTime();
+                long time = createTime.getTime();
+                long time1 = closedTime.getTime();
+                Long times = time1 - time;
+                waybill1.setTotalTime(times);
+                timelyWaybills.add(waybill1);
+            }
         }
         PageInfo<TimelyWaybill> objectPageInfo = new PageInfo<>(timelyWaybills);
-        for (TimelyWaybill timelyWaybill : timelyWaybills) {
-            timelyWaybill.setTotal(integer);
-            timelyWaybill.setTotalAmount(bigDecimal);
+        if (timelyWaybills.size()>0){
+            for (TimelyWaybill timelyWaybill : timelyWaybills) {
+                bigDecimal = bigDecimal.add(timelyWaybill.getAmount());
+            }
+            for (TimelyWaybill timelyWaybill : timelyWaybills) {
+                timelyWaybill.setTotal(integer);
+                timelyWaybill.setTotalAmount(bigDecimal);
+            }
         }
         return objectPageInfo.getList();
     }
+
+
 
 
     public void signFor(String wbId, String userId) {

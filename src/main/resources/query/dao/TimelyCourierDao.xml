@@ -2,6 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.huaruan.ud24.query.dao.TimelyCourierDao">
+    <resultMap id="BaseResultMap" type="cn.huaruan.ud24.query.entity.TimelyWbLog">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="wb_id" jdbcType="VARCHAR" property="wbId" />
+        <result column="courier_id" jdbcType="VARCHAR" property="courierId" />
+        <result column="state" jdbcType="INTEGER" property="state" />
+        <result column="detail" jdbcType="VARCHAR" property="detail" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+        <result column="abnormal_type" jdbcType="VARCHAR" property="abnormalType" />
+        <result column="closed_time" jdbcType="TIMESTAMP" property="closedTime" />
+    </resultMap>
     <select id="countTimely" resultType="java.lang.Long"
             parameterType="cn.huaruan.ud24.vo.FindTimelyCourierParam">
         SELECT count(*) FROM
@@ -43,8 +54,8 @@
         WHERE phone=#{phone}
     </select>
 
-    <select id="queryByCourierId" resultType="java.lang.String">
-        select wb_id
+    <select id="queryByCourierId" resultMap="BaseResultMap">
+        select *
         from timely_wb_log
         where courier_id = #{userId}
         and state = #{type}

@@ -10,6 +10,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
     <result column="abnormal_type" jdbcType="VARCHAR" property="abnormalType" />
+    <result column="closed_time" jdbcType="TIMESTAMP" property="closedTime" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="cn.huaruan.ud24.query.entity.TimelyWbLog">
     <result column="img" jdbcType="LONGVARCHAR" property="img" />
@@ -128,7 +129,7 @@
   </delete>
   <insert id="insert" parameterType="cn.huaruan.ud24.query.entity.TimelyWbLog">
     insert into timely_wb_log (id, wb_id, courier_id, 
-      state, detail, create_time, 
+      state, detail, create_time,
       remarks, abnormal_type, img
       )
     values (#{id,jdbcType=VARCHAR}, #{wbId,jdbcType=VARCHAR}, #{courierId,jdbcType=VARCHAR}, 
@@ -322,7 +323,21 @@
   </update>
   <update id="updateTimelyWbLogAndState">
     update timely_wb_log
-    set state = #{timelyWbLogState,jdbcType=INTEGER}
+    set state = #{timelyWbLogState,jdbcType=INTEGER},closed_time = CURRENT_TIMESTAMP()
     where wb_id = #{waybillId,jdbcType=VARCHAR}
   </update>
+  <select id="countTimelyWaybills" resultType="java.lang.Integer" parameterType="cn.huaruan.ud24.query.entity.TimelyUtil">
+    SELECT count(*)
+    FROM `timely_wb_log`
+    WHERE 1=1
+    <if test="riderId != null and riderId.length()>0">
+      AND `timely_wb_log`.courier_id=#{riderId}
+    </if>
+    and year(create_time) = #{years} and month(create_time) = #{month}
+  </select>
+  <select id="getOrderHistoryRiderId" resultMap="BaseResultMap" parameterType="cn.huaruan.ud24.query.entity.TimelyUtil">
+    SELECT *
+        FROM `timely_wb_log`
+        where courier_id = #{riderId} AND state=#{state}
+  </select>
 </mapper>

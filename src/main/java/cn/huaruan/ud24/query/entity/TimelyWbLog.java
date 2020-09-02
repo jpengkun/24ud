@@ -35,6 +35,9 @@ public class TimelyWbLog {
     @ApiModelProperty("创建时间")
     private Date createTime;
 
+    @ApiModelProperty("签收时间")
+    private Date closedTime;
+
     @ApiModelProperty("备注")
     private String remarks;
 

@@ -1,5 +1,7 @@
 package cn.huaruan.ud24.query.mapper;
 
+import cn.huaruan.ud24.query.entity.TimelyUtil;
+import cn.huaruan.ud24.query.entity.TimelyWaybill;
 import cn.huaruan.ud24.query.entity.TimelyWbLog;
 import cn.huaruan.ud24.query.entity.TimelyWbLogExample;
 import java.util.List;
@@ -42,4 +44,8 @@ public interface TimelyWbLogMapper {
     int updateByPrimaryKey(TimelyWbLog record);
 
     int updateTimelyWbLogAndState(@Param("timelyWbLogState") Integer timelyWbLogState,@Param("waybillId") String waybillId);
+
+    Integer countTimelyWaybills(TimelyUtil timelyUtil);
+
+    List<TimelyWbLog> getOrderHistoryRiderId(TimelyUtil timelyUtil);
 }

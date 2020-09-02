@@ -20,7 +20,7 @@
               #{amount,jdbcType=DECIMAL},#{confirm,jdbcType=TINYINT},#{state,jdbcType=INTEGER})
     </insert>
     <update id="signFor">
-        update `timely_wb_log` set `state` = 6,`detail` = '已签收!' where `courier_id` = #{userId} and `wb_id` = #{wbId}
+        update `timely_wb_log` set `state` = 6,`detail` = '已签收!',`closed_time` = CURRENT_TIMESTAMP() where `courier_id` = #{userId} and `wb_id` = #{wbId}
     </update>
 
     <update id="updateStateById">

@@ -431,7 +431,7 @@
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="phone != null">
+      <if test="phone != null and phone.length()>0">
         phone = #{phone,jdbcType=VARCHAR},
       </if>
       <if test="emergencyPeople != null">
@@ -470,7 +470,7 @@
       <if test="sex != null">
         sex = #{sex,jdbcType=INTEGER},
       </if>
-      <if test="password != null">
+      <if test="password != null and password.length()>0">
         password = #{password,jdbcType=VARCHAR},
       </if>
       <if test="remark != null">
@@ -496,6 +496,12 @@
       </if>
       <if test="money != null">
         money = #{money,jdbcType=DECIMAL},
+      </if>
+      <if test="smallShopName != null">
+        small_shop_name = #{smallShopName,jdbcType=DECIMAL},
+      </if>
+      <if test="smallShopId != null">
+        small_shop_id = #{smallShopId,jdbcType=DECIMAL},
       </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}

@@ -72,6 +72,13 @@ public class TimelyCourierController {
         return new ResultMessage<>(courierService.updateCourier(byPhone));
     }
 
+    @PostMapping("/updateInformation")
+    @ApiOperation("快递员修改个人信息接口")
+    public ResultMessage updateInformation(@RequestBody TimelyCourier courier) {
+        return new ResultMessage<>(courierService.updateInformation(courier));
+    }
+
+
     @PostMapping("/forget")
     @ApiOperation("忘记密码接口")
     public ResultMessage forget(@RequestBody TimelyCourier courier) {

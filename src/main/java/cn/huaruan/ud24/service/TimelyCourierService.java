@@ -329,4 +329,8 @@ public class TimelyCourierService {
             return null;
         }
     }
+
+    public long updateInformation(TimelyCourier courier) {
+        return timelyCourierDao.updateByPrimaryKeySelective(courier);
+    }
 }

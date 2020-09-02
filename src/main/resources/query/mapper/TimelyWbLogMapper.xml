@@ -8,9 +8,9 @@
     <result column="state" jdbcType="INTEGER" property="state" />
     <result column="detail" jdbcType="VARCHAR" property="detail" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="closed_time" jdbcType="TIMESTAMP" property="closedTime" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
     <result column="abnormal_type" jdbcType="VARCHAR" property="abnormalType" />
-    <result column="closed_time" jdbcType="TIMESTAMP" property="closedTime" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="cn.huaruan.ud24.query.entity.TimelyWbLog">
     <result column="img" jdbcType="LONGVARCHAR" property="img" />
@@ -323,7 +323,7 @@
   </update>
   <update id="updateTimelyWbLogAndState">
     update timely_wb_log
-    set state = #{timelyWbLogState,jdbcType=INTEGER},closed_time = CURRENT_TIMESTAMP()
+    set state = #{timelyWbLogState,jdbcType=INTEGER}
     where wb_id = #{waybillId,jdbcType=VARCHAR}
   </update>
   <select id="countTimelyWaybills" resultType="java.lang.Integer" parameterType="cn.huaruan.ud24.query.entity.TimelyUtil">

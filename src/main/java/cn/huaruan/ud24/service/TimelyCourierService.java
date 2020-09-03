@@ -127,6 +127,7 @@ public class TimelyCourierService {
     public long updateCourier(TimelyCourier timelyCourier) {
         AppAsserts.notNull(timelyCourier, "快递员信息不能为空");
         AppAsserts.notNull(timelyCourier.getPhone(), "快递员手机号不能为空");
+        AppAsserts.notNull(timelyCourier.getPassword(), "快递员密码不能为空");
         TimelyCourierExample courierExample = new TimelyCourierExample();
         courierExample.createCriteria().andPhoneEqualTo(timelyCourier.getPhone()).andIdNotEqualTo(timelyCourier.getId());
         AppAsserts.yes(timelyCourierDao.countByExample(courierExample) < 1,

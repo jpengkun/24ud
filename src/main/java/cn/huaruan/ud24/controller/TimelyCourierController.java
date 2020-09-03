@@ -65,11 +65,9 @@ public class TimelyCourierController {
     }
 
     @PostMapping("/findOneTimelyCourier")
-    @ApiOperation("快递员修改接口")
+    @ApiOperation("快递员修改密码接口")
     public ResultMessage findOne(@RequestBody TimelyCourier courier) {
-        TimelyCourier byPhone = courierService.findByPhone(courier.getPhone());
-        byPhone.setPassword(courier.getNewPassword());
-        return new ResultMessage<>(courierService.updateCourier(byPhone));
+        return new ResultMessage<>(courierService.updateCourier(courier));
     }
 
     @PostMapping("/updateInformation")

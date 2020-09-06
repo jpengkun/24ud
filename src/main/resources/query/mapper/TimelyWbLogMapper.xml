@@ -130,12 +130,12 @@
   <insert id="insert" parameterType="cn.huaruan.ud24.query.entity.TimelyWbLog">
     insert into timely_wb_log (id, wb_id, courier_id, 
       state, detail, create_time,
-      remarks, abnormal_type, img
+      remarks, abnormal_type, img,closed_time
       )
     values (#{id,jdbcType=VARCHAR}, #{wbId,jdbcType=VARCHAR}, #{courierId,jdbcType=VARCHAR}, 
       #{state,jdbcType=INTEGER}, #{detail,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{remarks,jdbcType=VARCHAR}, #{abnormalType,jdbcType=VARCHAR}, #{img,jdbcType=LONGVARCHAR}
-      )
+      ,CURRENT_TIMESTAMP())
   </insert>
   <insert id="insertSelective" parameterType="cn.huaruan.ud24.query.entity.TimelyWbLog">
     insert into timely_wb_log
@@ -167,6 +167,9 @@
       <if test="img != null">
         img,
       </if>
+      <if test="closedTime != null">s
+        closed_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -195,6 +198,9 @@
       </if>
       <if test="img != null">
         #{img,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="closedTime != null">s
+        CURRENT_TIMESTAMP(),
       </if>
     </trim>
   </insert>

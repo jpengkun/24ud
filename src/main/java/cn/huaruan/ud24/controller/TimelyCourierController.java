@@ -150,9 +150,9 @@ public class TimelyCourierController {
         TimelyWaybill timelyWaybill = new TimelyWaybill();
         timelyWaybill.setTmNo("24" + LocalDateTime.now(ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyyMMddhhmmssSS")));
         //查询该笔订单来自哪家店铺
-        String result = restTemplate.getForObject("http://localhost:8899/woho/myOrder/getOrderDetailsById/" + orderId, String.class);
+        String result = restTemplate.getForObject("http://121.41.64.240:8899/woho/myOrder/getOrderDetailsById/" + orderId, String.class);
         //修改订单状态为配送中
-        restTemplate.getForObject("http://localhost:8899/woho/myOrder//updateSend/" + orderId, String.class);
+        restTemplate.getForObject("http://121.41.64.240:8899/woho/myOrder//updateSend/" + orderId, String.class);
         //查看该店铺下的骑手
         JSONObject jsonObject = JSONObject.parseObject(result);
         String data = jsonObject.getString("data");
@@ -246,9 +246,10 @@ public class TimelyCourierController {
         TimelyWaybill timelyWaybill = new TimelyWaybill();
         timelyWaybill.setTmNo("24" + LocalDateTime.now(ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyyMMddhhmmssSS")));
         //查询该笔订单来自哪家店铺
-        String result = restTemplate.getForObject("http://localhost:8899/woho/myOrder/getOrderDetailsById/" + orderId, String.class);
+        String result = restTemplate.getForObject("http://121.41.64.240:8899/woho/myOrder/getOrderDetailsById/" + orderId, String.class);
         //修改订单状态为配送中
-        restTemplate.getForObject("http://localhost:8899/woho/myOrder/updateSend/" + orderId, String.class);
+        String forObject = restTemplate.getForObject("http://121.41.64.240:8899/woho/myOrder/updateSend/" + orderId, String.class);
+        System.out.println("&&&&&&======="+forObject);
         JSONObject jsonObject = JSONObject.parseObject(result);
         String data = jsonObject.getString("data");
         JSONObject dateO = JSONObject.parseObject(data);

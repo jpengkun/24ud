@@ -331,6 +331,11 @@ public class TimelyCourierService {
         }
     }
 
+    public List<TimelyCourier> queryRiders(String shopId) {
+        List<TimelyCourier> timelyCouriers = timelyCourierDao.selectByShopId(shopId);
+        return timelyCouriers;
+    }
+
     public long updateInformation(TimelyCourier courier) {
         return timelyCourierDao.updateByPrimaryKeySelective(courier);
     }

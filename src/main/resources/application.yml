@@ -102,6 +102,8 @@ custom:
         - "/v2/api-docs"
         - "/backPwd/**"
         - "/timely/courier/scanPackge/**"
+        - '/timely/courier/queryRiders/**'
+        - '/timely/courier/zhiDing/**'
         # ===================
 jpush:
   appKey: 00a89962a93799cd5d63e16c

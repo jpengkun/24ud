@@ -32,4 +32,7 @@ public interface TimelyCourierDao extends TimelyCourierMapper {
 
     @Select(value = "select count(*) from timely_wb_log where courier_id = #{id} and state = 4")
     Integer queryCapCount(String id);
+
+    @Select(value = "select * from timely_courier where small_shop_id = #{shopId} ")
+    List<TimelyCourier> selectByShopId(@Param("shopId") String shopId);
 }

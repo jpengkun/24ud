@@ -228,4 +228,76 @@ public class TimelyCourierController {
         courierService.isOpen(userId);
         return new ResultMessage().success();
     }
+
+    @CrossOrigin
+    @GetMapping(value = "/queryRiders/{shopId}")
+    @ApiOperation(value = "根据店铺id查询快递员列表")
+    public ResultMessage queryRiders(@PathVariable(value = "shopId") String shopId) {
+        List<TimelyCourier> timelyCouriers = courierService.queryRiders(shopId);
+        return new ResultMessage<>(timelyCouriers);
+    }
+
+    @CrossOrigin
+    @GetMapping(value = "/zhiDing")
+    @ApiOperation(value = "根据店铺id查询快递员列表")
+    public ResultMessage zhiDing(String orderId,String id){
+        //生成运单uuid
+        String wb_id = UUIDUtil.get();
+        TimelyWaybill timelyWaybill = new TimelyWaybill();
+        timelyWaybill.setTmNo("24" + LocalDateTime.now(ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyyMMddhhmmssSS")));
+        //查询该笔订单来自哪家店铺
+        String result = restTemplate.getForObject("http://localhost:8899/woho/myOrder/getOrderDetailsById/" + orderId, String.class);
+        //修改订单状态为配送中
+        restTemplate.getForObject("http://localhost:8899/woho/myOrder/updateSend/" + orderId, String.class);
+        JSONObject jsonObject = JSONObject.parseObject(result);
+        String data = jsonObject.getString("data");
+        JSONObject dateO = JSONObject.parseObject(data);
+        String shopName = dateO.getString("shopName");
+        String receiverPhone = dateO.getString("receiverPhone");
+        String receiverName = dateO.getString("receiverName");
+        String receiverAddress = dateO.getString("receiverAddress");
+        String sellerAddress = dateO.getString("sellerAddress");
+        String sellerPhone = dateO.getString("sellerPhone");
+        String sellerName = dateO.getString("sellerName");
+        String postFee = dateO.getString("postFee");
+        String weight = dateO.getString("weight");
+        TimelyWaybillVo waybill = new TimelyWaybillVo();
+        waybill.setReceiverPhone(receiverPhone);
+        waybill.setReceiver(receiverName);
+        waybill.setReceiverAddress(receiverAddress);
+        waybill.setSender(sellerName);
+        waybill.setSenderAddress(sellerAddress);
+        waybill.setSenderPhone(sellerPhone);
+        if (weight == null){
+            BigDecimal bigDecimalWeight = new BigDecimal(0.0);
+            waybill.setGoodsWeight(bigDecimalWeight);
+        }else {
+            BigDecimal bigDecimalWeight = new BigDecimal(0.5);
+            waybill.setGoodsWeight(bigDecimalWeight);
+        }
+        BigDecimal bigDecimal = new BigDecimal(7.5);
+        waybill.setAmount(bigDecimal);
+        waybill.setType(1);
+
+        //List<String> timelyCouriers = timelyCourierService.queryRidersByShopName(shopName);
+        /**
+         * 派单规则(优先级：是否开启接单模式、是否已达单次接单上限、评分高低)
+         */
+
+        //找出符合以上条件的骑手
+        TimelyCourier timelyCourier = timelyCourierService.findById(id);
+        //给骑手推送
+        Announcement announcement = new Announcement();
+        announcement.setType(2);
+        announcement.setContext("你有新的订单了,快去超市取货吧>>>>>");
+        announcement.setContextType("0");
+        if (timelyCourier != null){
+            announcement.setUserId(timelyCourier.getId());
+            waybill.setRiderId(timelyCourier.getId());
+            timelyWaybillController.add(waybill);
+        }
+        announcement.setPushType(2);
+        announcementController.push(announcement);
+        return new ResultMessage();
+    }
 }

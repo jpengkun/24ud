@@ -240,6 +240,7 @@
       <if test="record.img != null">
         img = #{record.img,jdbcType=LONGVARCHAR},
       </if>
+        closed_time = CURRENT_TIMESTAMP()
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -255,7 +256,7 @@
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       remarks = #{record.remarks,jdbcType=VARCHAR},
       abnormal_type = #{record.abnormalType,jdbcType=VARCHAR},
-      img = #{record.img,jdbcType=LONGVARCHAR}
+      img = #{record.img,jdbcType=LONGVARCHAR},closed_time = CURRENT_TIMESTAMP()
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -269,7 +270,7 @@
       detail = #{record.detail,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       remarks = #{record.remarks,jdbcType=VARCHAR},
-      abnormal_type = #{record.abnormalType,jdbcType=VARCHAR}
+      abnormal_type = #{record.abnormalType,jdbcType=VARCHAR},closed_time = CURRENT_TIMESTAMP()
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -301,6 +302,7 @@
       <if test="img != null">
         img = #{img,jdbcType=LONGVARCHAR},
       </if>
+      closed_time = CURRENT_TIMESTAMP()
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
@@ -324,12 +326,13 @@
       detail = #{detail,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       remarks = #{remarks,jdbcType=VARCHAR},
-      abnormal_type = #{abnormalType,jdbcType=VARCHAR}
+      abnormal_type = #{abnormalType,jdbcType=VARCHAR},
+      closed_time = CURRENT_TIMESTAMP()
     where id = #{id,jdbcType=VARCHAR}
   </update>
   <update id="updateTimelyWbLogAndState">
     update timely_wb_log
-    set state = #{timelyWbLogState,jdbcType=INTEGER}
+    set state = #{timelyWbLogState,jdbcType=INTEGER},closed_time = CURRENT_TIMESTAMP()
     where wb_id = #{waybillId,jdbcType=VARCHAR}
   </update>
   <select id="countTimelyWaybills" resultType="java.lang.Integer" parameterType="cn.huaruan.ud24.query.entity.TimelyUtil">

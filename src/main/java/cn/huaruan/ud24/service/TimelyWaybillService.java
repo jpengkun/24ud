@@ -14,9 +14,11 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.AllArgsConstructor;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -47,6 +49,9 @@ public class TimelyWaybillService {
     private final OrganizationDao organizationDao;
 
     private final QuestionWaybillDao questionWaybillDao;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     /**
      * 分页条件查询所有即时达运单
@@ -81,6 +86,7 @@ public class TimelyWaybillService {
         waybill.setId(id);
         waybill.setOrgId(organization.getId());
         waybill.setTmNo("24" + LocalDateTime.now(ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyyMMddhhmmssSS")));
+        //将生成的运单插入woho订单中
         waybill.setCreateTime(new Date());
         waybill.setConfirm(false);
         waybill.setPayStatus(false);
@@ -302,6 +308,9 @@ public class TimelyWaybillService {
 
     public void signFor(String wbId, String userId) {
             waybillDao.signFor(UUIDUtil.get(),wbId,userId);
+        TimelyWbWithLogs tb = waybillDao.findById(wbId);
+        //确认送达后根据运单号修改小超订单状态完成
+        restTemplate.getForObject("http://39.100.129.155:8899/woho/myOrder/sendOk/"+tb.getTmNo(),String.class);
     }
 
 

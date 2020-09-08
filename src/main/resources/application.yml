@@ -1,6 +1,6 @@
 # 服务配置
 server:
-  port: 9999
+  port: 8080
 
 # 启用Swagger文档
 swagger:
@@ -105,6 +105,8 @@ custom:
         - "/timely/courier/scanPackge/**"
         - '/timely/courier/queryRiders/**'
         - '/timely/courier/zhiDing/**'
+        - '/vip/waybill/**'
+        - '/timely/waybill/**'
         # ===================
 jpush:
   appKey: 00a89962a93799cd5d63e16c

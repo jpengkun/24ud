@@ -86,6 +86,7 @@ public class TimelyWaybillService {
         waybill.setId(id);
         waybill.setOrgId(organization.getId());
         waybill.setTmNo("24" + LocalDateTime.now(ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyyMMddhhmmssSS")));
+        //将生成的运单插入woho订单中
         waybill.setCreateTime(new Date());
         waybill.setConfirm(false);
         waybill.setPayStatus(false);
@@ -305,9 +306,11 @@ public class TimelyWaybillService {
 
 
 
-    public void signFor(String orderId,String wbId, String userId) {
-        waybillDao.signFor(UUIDUtil.get(),wbId,userId);
-        restTemplate.getForObject("http://121.41.64.240:8899/woho/myOrder/confirmReceipt/"+orderId,String.class);
+    public void signFor(String wbId, String userId) {
+            waybillDao.signFor(UUIDUtil.get(),wbId,userId);
+        TimelyWbWithLogs tb = waybillDao.findById(wbId);
+        //确认送达后根据运单号修改小超订单状态完成
+        restTemplate.getForObject("http://39.100.129.155:8899/woho/myOrder/sendOk/"+tb.getTmNo(),String.class);
     }
 
 

@@ -35,4 +35,14 @@ public interface TimelyCourierDao extends TimelyCourierMapper {
 
     @Select(value = "select * from timely_courier where small_shop_id = #{shopId} ")
     List<TimelyCourier> selectByShopId(@Param("shopId") String shopId);
+
+
+    @Select(value = "select * from timely_waybill where tm_no = #{tmNo} ")
+    TimelyWaybill selectByShopIdse(@Param("tmNo") String wbId);
+
+    @Select(value = "select * from timely_wb_log where wb_id = #{wbId}")
+    TimelyWbLog findById(@Param("wbId")String wbId);
+
+    @Select(value = "select name from timely_courier where id = #{courierId}")
+    String findByIds(@Param("courierId")String courierId);
 }

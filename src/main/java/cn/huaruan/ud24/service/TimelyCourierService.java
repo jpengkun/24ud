@@ -336,6 +336,23 @@ public class TimelyCourierService {
         return timelyCouriers;
     }
 
+    public CourierEvaluation queryRiderse(String tmNo) {
+        TimelyWaybill timelyWaybill = timelyCourierDao.selectByShopIdse(tmNo);
+        TimelyWbLog byId = timelyCourierDao.findById(timelyWaybill.getId());
+        String name =timelyCourierDao.findByIds(byId.getCourierId());
+        FindEvaluateAboutCourierParam evaluateAboutCourierParam = new FindEvaluateAboutCourierParam();
+        evaluateAboutCourierParam.setCourierId(byId.getCourierId());
+        Page<CourierEvaluate> courierEvaluateByCourierId = evaluateService.findCourierEvaluateByCourierId(evaluateAboutCourierParam);
+        List<CourierEvaluate> rows = courierEvaluateByCourierId.getRows();
+        CourierEvaluation courierEvaluation = new CourierEvaluation();
+        courierEvaluation.setCourierName(name);
+        List<String> courierEvaluation1 = courierEvaluation.getCourierEvaluation();
+        for (CourierEvaluate row : rows) {
+            courierEvaluation1.add(row.getEvaluate());
+        }
+        return courierEvaluation;
+    }
+
     public long updateInformation(TimelyCourier courier) {
         return timelyCourierDao.updateByPrimaryKeySelective(courier);
     }

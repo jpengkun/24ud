@@ -63,8 +63,8 @@ public class TimelyWaybillController {
 
     @GetMapping("/signFor")
     @ApiOperation("签收")
-    public ResultMessage signFor(String wbId,String userId){
-        waybillService.signFor(wbId,userId);
+    public ResultMessage signFor(String orderId,String wbId,String userId){
+        waybillService.signFor(orderId,wbId,userId);
         return new ResultMessage<>().success();
     }
 

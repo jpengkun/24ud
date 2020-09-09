@@ -14,9 +14,11 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.AllArgsConstructor;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -47,6 +49,9 @@ public class TimelyWaybillService {
     private final OrganizationDao organizationDao;
 
     private final QuestionWaybillDao questionWaybillDao;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     /**
      * 分页条件查询所有即时达运单
@@ -300,8 +305,9 @@ public class TimelyWaybillService {
 
 
 
-    public void signFor(String wbId, String userId) {
-            waybillDao.signFor(UUIDUtil.get(),wbId,userId);
+    public void signFor(String orderId,String wbId, String userId) {
+        waybillDao.signFor(UUIDUtil.get(),wbId,userId);
+        restTemplate.getForObject("http://121.41.64.240:8899/woho/myOrder/confirmReceipt/"+orderId,String.class);
     }
 
 

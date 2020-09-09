@@ -106,4 +106,5 @@ public class CourierEvaluateService {
         BigDecimal total = evaluates.stream().map(evaluate -> evaluate.getScore()).reduce((a, b) -> a.add(b)).get();
         return total.divide(new BigDecimal(evaluates.size()),1,BigDecimal.ROUND_HALF_UP);
     }
+
 }

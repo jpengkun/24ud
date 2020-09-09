@@ -78,6 +78,7 @@ custom:
         - "/todays/waybill/**"
         - "/organization/franchisee"
         - "/vip/**"
+        - '/timely/courier/queryRiderse/**'
       # 需要过滤的 post 请求
       post:
         - "/login"

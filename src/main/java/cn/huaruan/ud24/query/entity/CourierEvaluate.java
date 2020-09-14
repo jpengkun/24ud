@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @ApiModel("快递员评价")
 public class CourierEvaluate {
     @ApiModelProperty("主键")
-    private Integer id;
+    private String id;
 
     @ApiModelProperty("快递员id")
     private String courierId;
@@ -30,4 +30,13 @@ public class CourierEvaluate {
 
     @ApiModelProperty("即时达快递员id")
     private String timelyId;
+
+    @ApiModelProperty("运单id")
+    private String wbId;
+
+    @ApiModelProperty("骑手收益")
+    private Double riderGains;
+
+    @ApiModelProperty("快递员名字")
+    private String courierName;
 }

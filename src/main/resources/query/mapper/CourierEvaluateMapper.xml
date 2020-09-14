@@ -7,6 +7,7 @@
     <result column="evaluate" jdbcType="VARCHAR" property="evaluate" />
     <result column="score" jdbcType="INTEGER" property="score" />
     <result column="timely_id" jdbcType="VARCHAR" property="timelyId" />
+    <result column="wb_id" jdbcType="VARCHAR" property="wbId" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -123,6 +124,9 @@
       <if test="timelyId != null">
         timely_id,
       </if>
+      <if test="wbId != null">
+        wb_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -139,6 +143,9 @@
       </if>
       <if test="timelyId != null">
         #{timelyId,jdbcType=VARCHAR},
+      </if>
+      <if test="wbId != null">
+        #{wbId,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -207,5 +214,14 @@
       score = #{score,jdbcType=INTEGER},
       timely_id = #{timelyId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="findByIdEarnings" resultType="java.lang.Double">
+    select rider_gains from timely_gains where wb_id =#{wbId}
+  </select>
+  <select id="findById" resultType="java.lang.String">
+    select name from timely_courier where id = #{courierId}
+  </select>
+  <update id="updateRules" parameterType="cn.huaruan.ud24.query.entity.TimelyGains">
+    update timely_gains set rule=#{rule,jdbcType=DOUBLE} where courier_id=#{courierId,jdbcType=VARCHAR}
   </update>
 </mapper>

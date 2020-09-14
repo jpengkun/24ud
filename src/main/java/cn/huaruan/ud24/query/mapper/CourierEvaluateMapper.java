@@ -3,6 +3,9 @@ package cn.huaruan.ud24.query.mapper;
 import cn.huaruan.ud24.query.entity.CourierEvaluate;
 import cn.huaruan.ud24.query.entity.CourierEvaluateExample;
 import java.util.List;
+
+import cn.huaruan.ud24.query.entity.TimelyCourier;
+import cn.huaruan.ud24.query.entity.TimelyGains;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -34,4 +37,10 @@ public interface CourierEvaluateMapper {
     int updateByPrimaryKeySelective(CourierEvaluate record);
 
     int updateByPrimaryKey(CourierEvaluate record);
+
+    Double findByIdEarnings(@Param("wbId") String wbId);
+
+    String findById(@Param("courierId") String courierId);
+
+    void updateRules(TimelyGains timelyGains);
 }

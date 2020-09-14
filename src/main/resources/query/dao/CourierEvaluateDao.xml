@@ -13,7 +13,15 @@
             AND `courier_evaluate`.timely_id LIKE #{timelyId}
         </if>
     </select>
-    <select id="findCourierEvaluateByCourierId" resultType="cn.huaruan.ud24.query.entity.CourierEvaluate"
+    <resultMap id="BeanMaps" type="cn.huaruan.ud24.query.entity.CourierEvaluate">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result property="courierId" jdbcType="VARCHAR" column="courier_id"/>
+        <result property="evaluate" jdbcType="VARCHAR" column="evaluate"/>
+        <result property="score" jdbcType="INTEGER" column="score"/>
+        <result property="timelyId" jdbcType="VARCHAR" column="timely_id"/>
+        <result property="wbId" jdbcType="VARCHAR" column="wb_id"/>
+    </resultMap>
+    <select id="findCourierEvaluateByCourierId" resultMap="BeanMaps"
             parameterType="cn.huaruan.ud24.vo.FindEvaluateAboutCourierParam">
         SELECT *
         FROM `courier_evaluate`
@@ -30,5 +38,48 @@
         select AVG(score)
         from `courier_evaluate`
         where courier_id = #{userId}
+    </select>
+    <select id="findByWbIdCourierEvaluate" resultMap="BeanMaps">
+        select * from courier_evaluate where wb_id =#{wbId}
+    </select>
+    <insert id="addRules" parameterType="cn.huaruan.ud24.query.entity.TimelyGains">
+        insert into timely_gains
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="courierId != null">
+                courier_id,
+            </if>
+            <if test="evaluate != null">
+                wb_id,
+            </if>
+            <if test="score != null">
+                rider_gains,
+            </if>
+            <if test="timelyId != null">
+                rule,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="courierId != null">
+                #{courierId,jdbcType=VARCHAR},
+            </if>
+            <if test="evaluate != null">
+                #{wbId,jdbcType=VARCHAR},
+            </if>
+            <if test="score != null">
+                #{riderGains,jdbcType=INTEGER},
+            </if>
+            <if test="timelyId != null">
+                #{rule,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="findByIdWbId" resultType="cn.huaruan.ud24.query.entity.TimelyWaybill">
+        select * from timely_waybill where id=#{wbId}
     </select>
 </mapper>

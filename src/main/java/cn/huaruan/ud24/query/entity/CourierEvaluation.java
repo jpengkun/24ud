@@ -19,13 +19,8 @@ public class CourierEvaluation implements Serializable {
     @ApiModelProperty(value ="快递员名字")
     private String courierName;
 
-
-    @ApiModelProperty(value ="快递员评价")
-    private List<String> courierEvaluation = new ArrayList<>();
-
-    public CourierEvaluation(String courierName, List<String> courierEvaluation) {
+    public CourierEvaluation(String courierName) {
         this.courierName = courierName;
-        this.courierEvaluation = courierEvaluation;
     }
 
     public CourierEvaluation() {

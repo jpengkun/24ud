@@ -310,9 +310,7 @@ public class TimelyCourierController {
     @GetMapping(value = "/queryRiderse/{tmNo}")
     @ApiOperation(value = "根据店铺id查询快递员列表")
     public ResultMessage queryRiderse(@PathVariable(value = "tmNo") String tmNo) {
-        CourierEvaluation courierEvaluation = courierService.queryRiderse(tmNo);
-        return new ResultMessage<>(courierEvaluation);
+        return new ResultMessage<>(courierService.queryRiderse(tmNo).equals("")?0:courierService.queryRiderse(tmNo));
     }
-
 
 }

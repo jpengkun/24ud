@@ -304,4 +304,13 @@ public class TimelyCourierController {
         announcementController.push(announcement);
         return new ResultMessage();
     }
+
+    /**
+     * 根据wbNo查询骑手名字以及送达时间
+     */
+    @ApiOperation(value = "根据wbNo查询骑手名字以及送达时间")
+    @GetMapping(value = "/getRiderName/{wbNo}")
+    public ResultMessage getRiderName(@PathVariable("wbNo") String wbNo){
+        return new ResultMessage(timelyCourierService.getRiderName(wbNo));
+    }
 }

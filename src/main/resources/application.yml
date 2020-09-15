@@ -105,6 +105,7 @@ custom:
         - "/timely/courier/scanPackge/**"
         - '/timely/courier/queryRiders/**'
         - '/timely/courier/zhiDing/**'
+        - '/timely/courier/getRiderName/**'
         - '/vip/waybill/**'
         - '/timely/waybill/**'
         # ===================

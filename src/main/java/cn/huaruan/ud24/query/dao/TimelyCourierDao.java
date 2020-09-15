@@ -1,5 +1,6 @@
 package cn.huaruan.ud24.query.dao;
 
+import cn.huaruan.ud24.query.entity.RiderInfo;
 import cn.huaruan.ud24.query.entity.TimelyCourier;
 import cn.huaruan.ud24.query.entity.TimelyWbLog;
 import cn.huaruan.ud24.query.entity.TimelyWaybill;
@@ -35,4 +36,15 @@ public interface TimelyCourierDao extends TimelyCourierMapper {
 
     @Select(value = "select * from timely_courier where small_shop_id = #{shopId} ")
     List<TimelyCourier> selectByShopId(@Param("shopId") String shopId);
+
+    /**
+     * @param wbNo
+     * @return
+     */
+    @Select(value = "select tc.id, tc.`name`,tc.small_shop_name, twl.closed_time \n" +
+            "from timely_waybill tw,timely_wb_log twl,timely_courier tc\n" +
+            "where tw.tm_no = #{wbNo} \n" +
+            "and tw.id = twl.wb_id\n" +
+            "and tc.id = twl.courier_id")
+    RiderInfo getRiderName(String wbNo);
 }

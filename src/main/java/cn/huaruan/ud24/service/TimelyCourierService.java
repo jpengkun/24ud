@@ -339,4 +339,8 @@ public class TimelyCourierService {
     public long updateInformation(TimelyCourier courier) {
         return timelyCourierDao.updateByPrimaryKeySelective(courier);
     }
+
+    public RiderInfo getRiderName(String wbNo) {
+        return timelyCourierDao.getRiderName(wbNo);
+    }
 }

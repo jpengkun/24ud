@@ -12,6 +12,9 @@ import java.math.BigDecimal;
 @Data
 public class IncomeInfo {
 
+    @ApiModelProperty("骑手id")
+    private String id;
+
     @ApiModelProperty("今日收入")
     private BigDecimal income;
 
@@ -23,6 +26,7 @@ public class IncomeInfo {
 
     private Integer isOpen;
 
+    @ApiModelProperty("骑手名字")
     private String courierName;
 
 }

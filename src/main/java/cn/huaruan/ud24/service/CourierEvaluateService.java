@@ -78,6 +78,8 @@ public class CourierEvaluateService {
         List<IncomeInfo> infoList = new ArrayList<>();
         for (TimelyCourier courier : timelyCouriers) {
             IncomeInfo incomeInfo = timelyWaybillMapper.queryByRiderId(courier.getId());
+            incomeInfo.setId(courier.getId());
+            incomeInfo.setCourierName(courier.getName());
             if (null == incomeInfo.getIncome()){
                 incomeInfo.setIncome(BigDecimal.valueOf(0.0));
             }

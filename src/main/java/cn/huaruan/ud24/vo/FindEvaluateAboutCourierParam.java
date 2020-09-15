@@ -11,4 +11,8 @@ public class FindEvaluateAboutCourierParam extends PageParam {
     private String courierId;
     @ApiModelProperty("即时达快递员id")
     private String timelyId;
+
+    private Integer pageNo;
+
+    private Integer pageSize;
 }

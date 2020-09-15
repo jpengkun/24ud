@@ -93,6 +93,7 @@ custom:
         - "/timely/pay/notify"
         - "/timely/waybill/**"
         - "/courierEvaluates/courierId/"
+        - "/courierEvaluates/addEvaluates/**"
       # 需要过滤的请求，不限方法
       pattern:
         - "/websocket/**"

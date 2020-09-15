@@ -23,4 +23,6 @@ public class IncomeInfo {
 
     private Integer isOpen;
 
+    private String courierName;
+
 }

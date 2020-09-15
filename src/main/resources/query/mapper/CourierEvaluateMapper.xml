@@ -127,6 +127,9 @@
       <if test="wbId != null">
         wb_id,
       </if>
+      <if test="courierImgUrl != null">
+        img_url,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -146,6 +149,9 @@
       </if>
       <if test="wbId != null">
         #{wbId,jdbcType=VARCHAR},
+      </if>
+      <if test="courierImgUrl != null">
+        #{courierImgUrl,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -224,4 +230,7 @@
   <update id="updateRules" parameterType="cn.huaruan.ud24.query.entity.TimelyGains">
     update timely_gains set rule=#{rule,jdbcType=DOUBLE} where courier_id=#{courierId,jdbcType=VARCHAR}
   </update>
+  <select id="findByTmNo" resultType="java.lang.String">
+    select id from timely_waybill where tm_no =#{logisticsNumber}
+  </select>
 </mapper>

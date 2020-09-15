@@ -1,11 +1,9 @@
 package cn.huaruan.ud24.query.mapper;
 
-import cn.huaruan.ud24.query.entity.CourierEvaluate;
-import cn.huaruan.ud24.query.entity.CourierEvaluateExample;
+import cn.huaruan.ud24.query.entity.*;
+
 import java.util.List;
 
-import cn.huaruan.ud24.query.entity.TimelyCourier;
-import cn.huaruan.ud24.query.entity.TimelyGains;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -43,4 +41,6 @@ public interface CourierEvaluateMapper {
     String findById(@Param("courierId") String courierId);
 
     void updateRules(TimelyGains timelyGains);
+
+    String findByTmNo(String logisticsNumber);
 }

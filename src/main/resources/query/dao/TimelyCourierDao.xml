@@ -77,5 +77,11 @@
         from timely_courier
         where small_shop_name = #{shopName}
     </select>
+    <select id="findByIdName" resultType="cn.huaruan.ud24.query.entity.TimelyCourier">
+        select id,name,is_open as isOpen from timely_courier where 1=1
+        <if test="courierId!=null">
+            and id =#{courierId}
+        </if>
+    </select>
 
 </mapper>

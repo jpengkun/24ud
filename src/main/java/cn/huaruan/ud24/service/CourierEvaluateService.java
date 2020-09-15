@@ -5,13 +5,21 @@ import cn.huaruan.ud24.application.common.EntityUtils;
 import cn.huaruan.ud24.application.common.UUIDUtil;
 import cn.huaruan.ud24.application.query.Page;
 import cn.huaruan.ud24.query.dao.CourierEvaluateDao;
+import cn.huaruan.ud24.query.dao.TimelyCourierDao;
 import cn.huaruan.ud24.query.entity.*;
+import cn.huaruan.ud24.query.mapper.TimelyCourierMapper;
+import cn.huaruan.ud24.query.mapper.TimelyWaybillMapper;
 import cn.huaruan.ud24.vo.FindEvaluateAboutCourierParam;
+import cn.huaruan.ud24.vo.IncomeInfo;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,6 +29,14 @@ public class CourierEvaluateService {
 
     private final CourierEvaluateDao evaluateDao;
 
+    @Autowired
+    private CourierEvaluateDao courierEvaluateDao;
+
+    @Autowired
+    private TimelyCourierDao timelyCourierDao;
+
+    @Autowired
+    private TimelyWaybillMapper timelyWaybillMapper;
     /**
      * 添加评论
      * @param courierEvaluate
@@ -30,6 +46,11 @@ public class CourierEvaluateService {
         AppAsserts.notNull(courierEvaluate,"评价信息不能为空");
         AppAsserts.notNull(courierEvaluate.getCourierId(),"快递员Id不能为空");
         AppAsserts.notNull(courierEvaluate.getScore(),"快递员得分不能为空");
+        if (courierEvaluate.getWbId()==null&&courierEvaluate.getLogisticsNumber()!=null){
+            String id = evaluateDao.findByTmNo(courierEvaluate.getLogisticsNumber());
+            courierEvaluate.setId(UUIDUtil.get());
+            courierEvaluate.setWbId(id);
+        }
         AppAsserts.notNull(courierEvaluate.getWbId(),"运单id不能为空");
         return evaluateDao.insertSelective(courierEvaluate);
     }
@@ -43,15 +64,36 @@ public class CourierEvaluateService {
         //AppAsserts.notNull(courierParam.getCourierId(),"快递员Id不能为空");
         long total = evaluateDao.countEvaluate(courierParam);
         List<CourierEvaluate> evaluates = evaluateDao.findCourierEvaluateByCourierId(courierParam);
-        if (evaluates!=null){
-            for (CourierEvaluate evaluate : evaluates) {
-                String name = evaluateDao.findById(evaluate.getCourierId());
-                evaluate.setCourierName(name);
-                Double earnings = evaluateDao.findByIdEarnings(evaluate.getWbId());
-                evaluate.setRiderGains(earnings);
-            }
-        }
         return new Page<>(total,evaluates);
+    }
+
+    /**
+     * 查询所有快递员评分及收益
+     * @param courierParam
+     * @return
+     */
+    public PageInfo<IncomeInfo> findCourierEvaluateByCourierIds(FindEvaluateAboutCourierParam courierParam){
+        PageHelper.startPage(courierParam.getPageNo(), courierParam.getPageSize());
+        List<TimelyCourier> timelyCouriers = timelyCourierDao.findByIdName(courierParam);
+        List<IncomeInfo> infoList = new ArrayList<>();
+        for (TimelyCourier courier : timelyCouriers) {
+            IncomeInfo incomeInfo = timelyWaybillMapper.queryByRiderId(courier.getId());
+            if (null == incomeInfo.getIncome()){
+                incomeInfo.setIncome(BigDecimal.valueOf(0.0));
+            }
+            Double evaluate = courierEvaluateDao.findAvgEvaluateByCourierId(courier.getId());
+            if (null == evaluate){
+                incomeInfo.setGrade(5.0);
+            }else {
+                incomeInfo.setGrade(evaluate);
+            }
+            //是否开启
+            //TimelyCourier timelyCourier = timelyCourierDao.selectByPrimaryKey(courier.getId());
+            incomeInfo.setIsOpen(courier.getIsOpen());
+            infoList.add(incomeInfo);
+        }
+        PageInfo<IncomeInfo> pageInfo = new PageInfo(infoList);
+        return pageInfo;
     }
 
     /**

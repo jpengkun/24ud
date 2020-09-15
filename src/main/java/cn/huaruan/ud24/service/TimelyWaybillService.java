@@ -307,7 +307,7 @@ public class TimelyWaybillService {
 
 
     public void signFor(String wbId, String userId) {
-            waybillDao.signFor(UUIDUtil.get(),wbId,userId);
+        waybillDao.signFor(UUIDUtil.get(),wbId,userId);
         TimelyWbWithLogs tb = waybillDao.findById(wbId);
         //确认送达后根据运单号修改小超订单状态完成
         restTemplate.getForObject("http://39.100.129.155:8899/woho/myOrder/sendOk/"+tb.getTmNo(),String.class);

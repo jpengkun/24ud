@@ -39,4 +39,10 @@ public class CourierEvaluate {
 
     @ApiModelProperty("快递员名字")
     private String courierName;
+
+    @ApiModelProperty("物流单号")
+    private String logisticsNumber;
+
+    @ApiModelProperty("评论图片")
+    private String courierImgUrl;
 }

@@ -5,6 +5,7 @@ import cn.huaruan.ud24.query.entity.TimelyCourier;
 import cn.huaruan.ud24.query.entity.TimelyWbLog;
 import cn.huaruan.ud24.query.entity.TimelyWaybill;
 import cn.huaruan.ud24.query.mapper.TimelyCourierMapper;
+import cn.huaruan.ud24.vo.FindEvaluateAboutCourierParam;
 import cn.huaruan.ud24.vo.FindTimelyCourierParam;
 import cn.huaruan.ud24.vo.UpdateCourierStateVo;
 import org.apache.ibatis.annotations.Param;
@@ -57,4 +58,7 @@ public interface TimelyCourierDao extends TimelyCourierMapper {
             "and tw.id = twl.wb_id\n" +
             "and tc.id = twl.courier_id")
     RiderInfo getRiderName(String wbNo);
+
+
+    List<TimelyCourier> findByIdName(FindEvaluateAboutCourierParam courierParam);
 }

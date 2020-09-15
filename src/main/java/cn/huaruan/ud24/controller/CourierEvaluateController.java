@@ -3,6 +3,7 @@ package cn.huaruan.ud24.controller;
 import cn.huaruan.ud24.application.ResultMessage;
 import cn.huaruan.ud24.application.query.Page;
 import cn.huaruan.ud24.query.entity.CourierEvaluate;
+import cn.huaruan.ud24.query.entity.TimelyGains;
 import cn.huaruan.ud24.service.CourierEvaluateService;
 
 import cn.huaruan.ud24.vo.FindEvaluateAboutCourierParam;
@@ -41,5 +42,19 @@ public class CourierEvaluateController {
     @ApiOperation("修改评价")
     public ResultMessage update(@RequestBody CourierEvaluate courierEvaluate){
         return new ResultMessage(evaluateService.update(courierEvaluate));
+    }
+
+    @GetMapping("/updateRules")
+    @ApiOperation("修改收益规则")
+    public ResultMessage updateRules(@RequestBody TimelyGains timelyGains){
+        evaluateService.updateRules(timelyGains);
+        return new ResultMessage();
+    }
+
+    @PostMapping("/addRules")
+    @ApiOperation("修改收益规则")
+    public ResultMessage addRules(@RequestBody TimelyGains timelyGains){
+        evaluateService.addRules(timelyGains);
+        return new ResultMessage();
     }
 }

@@ -13,6 +13,7 @@ import cn.huaruan.ud24.service.TimelyWaybillService;
 import cn.huaruan.ud24.vo.*;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -313,4 +314,12 @@ public class TimelyCourierController {
     public ResultMessage getRiderName(@PathVariable("wbNo") String wbNo){
         return new ResultMessage(timelyCourierService.getRiderName(wbNo));
     }
+
+    @CrossOrigin
+    @GetMapping(value = "/queryRiderse/{tmNo}")
+    @ApiOperation(value = "根据店铺id查询快递员列表")
+    public ResultMessage queryRiderse(@PathVariable(value = "tmNo") String tmNo) {
+        return new ResultMessage<>(courierService.queryRiderse(tmNo).equals("")?0:courierService.queryRiderse(tmNo));
+    }
+
 }

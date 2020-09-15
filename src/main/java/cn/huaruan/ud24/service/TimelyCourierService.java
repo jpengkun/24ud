@@ -336,6 +336,17 @@ public class TimelyCourierService {
         return timelyCouriers;
     }
 
+    public String queryRiderse(String tmNo) {
+        TimelyWaybill timelyWaybill = timelyCourierDao.selectByShopIdse(tmNo);
+        if (timelyWaybill!=null){
+            TimelyWbLog byId = timelyCourierDao.findById(timelyWaybill.getId());
+            String name =timelyCourierDao.findByIds(byId.getCourierId());
+            return name;
+        }else {
+            return "";
+        }
+    }
+
     public long updateInformation(TimelyCourier courier) {
         return timelyCourierDao.updateByPrimaryKeySelective(courier);
     }
@@ -343,4 +354,5 @@ public class TimelyCourierService {
     public RiderInfo getRiderName(String wbNo) {
         return timelyCourierDao.getRiderName(wbNo);
     }
+
 }
